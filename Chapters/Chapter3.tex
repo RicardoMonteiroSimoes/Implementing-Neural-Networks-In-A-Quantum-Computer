@@ -1,0 +1,200 @@
+% Chapter 3
+
+\chapter{Quantum Classification Circuits} % Main chapter title
+
+\label{Chapter3}
+
+%----------------------------------------------------------------------------------------
+\section{Quantum circuits}
+\label{chapter:quantum_circuits}
+
+Using the knowledge gathered in chapter \ref{chapter:computational_neuron} and \ref{chapter:quantum_embedding}, several quantum circuits are constructed for classification. \code{qiskit} offers the possibility of gradient based optimization of weights in a given circuit. Based on the paper by Schuld et al. \cite{schuld_evaluating_2019}, we can optimize any given quantum circuit with a \code{NeuralNetworkClassifier}\cite{qiskit_neural_nodate}. The code to turn a single circuit into a classifier is shown in figure \ref{fig:code_qnn}. Note that the optimization itself is done in a classical fashion - only the classifier is solved as a quantum circuit. All calculations and classifications were done with the \code{qiskit} '\code{aer\_simulator}'.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{minted}{python}
+    circuit_qnn = CircuitQNN(circuit=circuit,    
+                         input_params=inputs,
+                         weight_params=weights,
+                         interpret=parity,
+                         output_shape=output_shape,
+                         quantum_instance=quantum_instance)
+
+    nn_classifier = NeuralNetworkClassifier(neural_network=circuit_qnn, 
+                                            optimizer=COBYLA())
+    \end{minted}
+    \caption{Python code to create a neural network classifier from a quantum circuit}
+    \label{fig:code_qnn}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \scalebox{0.66}{
+        \begin{tikzpicture}[
+          roundnode/.style={circle, draw=black!60, fill=white!5, thick, minimum size=7mm},
+          squarednode/.style={rectangle, draw=black!60, fill=white!5, thick, minimum size=10mm},
+          optimizernode/.style={rectangle, draw=black!60, fill=white!5, thick, minimum size=25mm},
+          quantumcircuit/.style={draw=blue, minimum height=3.5cm, minimum width=10cm, fill=white!5, label=below:{\color{blue}quantum\ circuit}},
+        ]
+            %Nodes
+            \node[roundnode]        (dataset)        {Data};
+            \node[squarednode]      (preprocess)     [right=of dataset] {Preprocessing};
+            \node                   (point1)         [below=of preprocess] {};
+            \node[quantumcircuit]   (quantumcircuit) [below right=of dataset]  {
+                \Qcircuit @C=1em @R=.7em {
+                    \lstick{\ket{0}} & \multigate{3}{state\ preparation} & \multigate{3}{model\ circuit} & \meter & \cw \\
+                    \lstick{\ket{0}} & \ghost{state\ preparation} & \ghost{model\ circuit} & \meter & \cw \\
+                    \cdots & \nghost{state\ preparation} & \nghost{model\ circuit} & \cdots &  \\
+                    \lstick{\ket{0}} & \ghost{state\ preparation} & \ghost{model\ circuit} & \meter & \cw \gategroup{1}{5}{4}{5}{1.5em}{\}}
+                }
+            };
+            \node[optimizernode]      (optimizer)     [right=of quantumcircuit] {Optimizer};
+            % Lines
+            \draw[->] (dataset.east) -- (preprocess.west);
+            \draw[->] (quantumcircuit.east) -- (optimizer.west);
+            \draw [->] (preprocess.south) -- ++(0,-.6) -- ++(+1.3,0) -| ++(0,-0.6);
+            \draw [->] (optimizer.north) -- ++(0,+1.25) -- ++(-6.15,0) node[auto,midway,above] {updates} -| ++(0,-1);
+        \end{tikzpicture}
+    }
+    \caption{Schematic view of classical and quantum circuit}
+    \label{fig:schematic_view_classical_and_quantum_circuit}
+\end{figure}
+
+\code{inputs} and \code{weights} are the variable parameters in our circuit, where any feature $f_i$ is used in \code{inputs} and any weight $\omega_i$ in \code{weights}.
+The \code{NeuralNetworkClassifier} in combination with \code{CircuitQNN} uses a measurment of all given qubits. The amount of $1$ is then counted and used with modulo $n$ (for $n$ classes) to determine the class. Whilst there are other possibilities, this examination sticks to this classification method. The \code{parity} function used for this is defined in figure \ref{fig:parity_function}
+
+\begin{figure}[!ht]
+    \centering
+    \begin{minted}{python}
+    def parity(x):
+        return '{:b}'.format(x).count('1') % n
+    \end{minted}
+    \caption{Parity function used to determine the class of a given data sample}
+    \label{fig:parity_function}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+        \scalebox{0.5}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { 
+            \ghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_0})} & \gate{\mathrm{R_Y}\,(\mathrm{w_0})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_13})} & \qw & \qw\\ 
+            \ghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_1})} & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_10})} & \gate{\mathrm{R_Y}\,(\mathrm{w_1})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+            \ghost{ {q}_{2} :  } & \lstick{ {q}_{2} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_2})} & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_11})} & \gate{\mathrm{R_Y}\,(\mathrm{w_2})} & \ctrl{1} & \qw & \qw & \qw & \qw\\ 
+            \ghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_12})} & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \ctrl{-3} & \qw & \qw\\
+          }
+        }
+    \caption{Circuit 1 with $\mathrm{RY}$ gates before each entanglement with parameterized $\mathrm{CRY}$ gates}
+    \label{fig:qc_ryrycryry}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \scalebox{0.5}{
+            \Qcircuit @C=1.0em @R=0.2em @!R { \\
+    	 	\nghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_0})} & \gate{\mathrm{R_Y}\,(\mathrm{w_0})} & \ctrl{1} & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_13})} & \qw & \qw\\ 
+    	 	\nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_1})} & \gate{\mathrm{R_Y}\,(\mathrm{w_1})} & \gate{\mathrm{R_Y}\,(\mathrm{w_10})} & \ctrl{1} & \qw & \qw & \qw & \qw\\ 
+    	 	\nghost{ {q}_{2} :  } & \lstick{ {q}_{2} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_2})} & \gate{\mathrm{R_Y}\,(\mathrm{w_2})} & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_11})} & \ctrl{1} & \qw & \qw & \qw\\ 
+    	 	\nghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_12})} & \ctrl{-3} & \qw & \qw\\ 
+    \\ }
+    }
+    \caption{Circuit 2 with $\mathrm{RY}$ for input and weights before entanglement with parameterized $\mathrm{CRY}$ gates}
+    \label{fig:qc_ryrycrycry}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \scalebox{0.5}{
+    \Qcircuit @C=1.0em @R=0.2em @!R { \\
+    	 	\nghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_0})} & \gate{\mathrm{R_Y}\,(\mathrm{w_0})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \control\qw & \qw & \qw\\ 
+    	 	\nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_1})} & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_1})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+    	 	\nghost{ {q}_{2} :  } & \lstick{ {q}_{2} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_2})} & \qw & \qw & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_2})} & \ctrl{1} & \qw & \qw & \qw & \qw\\ 
+    	 	\nghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \qw & \qw & \qw & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \ctrl{-3} & \qw & \qw\\ 
+    \\ }
+    }
+    \caption{Circuit 3 with \mathrm{RY} gates before each entanglement with \mathrm{CZ} gates}
+    \label{fig:qc_ryryczry}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \scalebox{0.3}{
+\Qcircuit @C=1.0em @R=0.2em @!R { \\
+	 	\nghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_0})} & \gate{\mathrm{R_Y}\,(\mathrm{w_0})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_13})} & \gate{\mathrm{R_Y}\,(\mathrm{w_4})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_17})} & \qw & \qw\\ 
+	 	\nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_1})} & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_10})} & \gate{\mathrm{R_Y}\,(\mathrm{w_1})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_14})} & \gate{\mathrm{R_Y}\,(\mathrm{w_5})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+	 	\nghost{ {q}_{2} :  } & \lstick{ {q}_{2} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_2})} & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_11})} & \gate{\mathrm{R_Y}\,(\mathrm{w_2})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_15})} & \gate{\mathrm{R_Y}\,(\mathrm{w_6})} & \ctrl{1} & \qw & \qw & \qw & \qw\\ 
+	 	\nghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_12})} & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \ctrl{-3} & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_16})} & \gate{\mathrm{R_Y}\,(\mathrm{w_7})} & \ctrl{-3} & \qw & \qw\\ 
+\\ }}
+    \caption{Circuit 4 from figure \ref{fig:qc_ryrycryry} with repeated weight layer}
+    \label{fig:qc_ryrycryry_double}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \scalebox{0.5}{
+\Qcircuit @C=1.0em @R=0.2em @!R { \\
+	 	\nghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_0})} & \gate{\mathrm{R_Y}\,(\mathrm{w_0})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_4})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \control\qw & \qw & \qw\\ 
+	 	\nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_1})} & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_1})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_5})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+	 	\nghost{ {q}_{2} :  } & \lstick{ {q}_{2} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_2})} & \qw & \qw & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_2})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_6})} & \ctrl{1} & \qw & \qw & \qw & \qw\\ 
+	 	\nghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \qw & \qw & \qw & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \ctrl{-3} & \qw & \qw & \qw & \qw & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_7})} & \ctrl{-3} & \qw & \qw\\ 
+\\ }}
+    \caption{Circuit 5 from figure \ref{fig:qc_ryrycrycry} with repeated weight layer}
+    \label{fig:qc_ryryczry_double}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+\scalebox{0.5}{
+\Qcircuit @C=1.0em @R=0.2em @!R { \\
+	 	\nghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_0})} & \ctrl{1} & \gate{\mathrm{R_Y}\,(\mathrm{w_0})} & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_13})} & \qw & \qw & \qw\\ 
+	 	\nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_1})} & \gate{\mathrm{R_Y}\,(\mathrm{w_10})} & \ctrl{1} & \gate{\mathrm{R_Y}\,(\mathrm{w_1})} & \qw & \qw & \qw & \qw & \qw\\ 
+	 	\nghost{ {q}_{2} :  } & \lstick{ {q}_{2} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_2})} & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_11})} & \ctrl{1} & \gate{\mathrm{R_Y}\,(\mathrm{w_2})} & \qw & \qw & \qw & \qw\\ 
+	 	\nghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_12})} & \qw & \ctrl{-3} & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \qw & \qw\\ 
+\\ }}
+    \caption{Circuit 6 with parameterized $\mathrm{RY}$ gates after entanglement with parameterized $\mathrm{CRY}$ gates}
+    \label{fig:qc_rycryry}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \scalebox{0.5}{
+\Qcircuit @C=1.0em @R=0.2em @!R { \\
+	 	\nghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_0})} & \gate{\mathrm{R_Y}\,(\mathrm{i_2})} & \gate{\mathrm{R_Y}\,(\mathrm{w_0})} & \ctrl{1} & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_12})} & \gate{\mathrm{R_Y}\,(\mathrm{w_1})} & \ctrl{1} & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_13})} & \qw & \qw\\ 
+	 	\nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_1})} & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_10})} & \gate{\mathrm{R_Y}\,(\mathrm{w_2})} & \ctrl{-1} & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_11})} & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \ctrl{-1} & \qw & \qw\\ 
+\\ }}
+    \caption{Circuit 7, resembles minimized circuit \ref{fig:qc_ryrycryry}, which can still classify 4 different classes}
+    \label{fig:qc_ryryrycry_2qbit}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \scalebox{0.5}{
+\Qcircuit @C=1.0em @R=0.2em @!R { \\
+	 	\nghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_0})} & \gate{\mathrm{R_Y}\,(\mathrm{i_2})} & \gate{\mathrm{R_Y}\,(\mathrm{w_0})} & \ctrl{1} & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_1})} & \ctrl{1} & \qw & \control\qw & \qw & \qw\\ 
+	 	\nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_1})} & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_2})} & \ctrl{-1} & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \ctrl{-1} & \qw & \qw\\ 
+\\ }}
+    \caption{Circuit 8, resembles minimized circuit \ref{fig:qc_ryryczry}, which can still classify 4 different classes}
+    \label{fig:qc_ryryczry_2qbit}
+\end{figure}
+
+
+\section{Datasets}
+\label{chapter:datasets}
+
+The shown circuits shown in chapter \ref{chapter:quantum_circuits} are used as shown or adapted for the given amount of features and classes of the testing dataset. The datasets were used in three different forms of normalization. The first one no normalization: the values contained inside the dataset are taken as raw values and given to the quantum circuit. The second choice of normalization is done on a range from $-1$ to $1$, and the third on a range from $-\pi$ to $\pi$. As seen in chapters \ref{chapter:quantum_embedding} and \ref{chapter:rotation}, $\pi$ corresponds to a $180°$ rotation, so should offer some additional expressability and the normalization to the range of $-1$ and $1$ does the same, although with a smaller degree of rotation. The data collected on each circuit was done trough an iteration of 10 learning steps, all starting from a completely empty weightset. Each measurment in the simulator of \code{qiskit} was done with $1024$ shots. The data split was $25\%$ testing data and $75\%$ training data. This was all done twice - once with random shuffle of the data between each training iteration, and once without. The seeds were all set for any randomized function, \emph{except} the measurment simulator from \code{qiskit}. This due to the fact that any measurment in real life cannot be predicted through a random seed. This is supposed to allow better evaluation and understanding of training a quantum classifier.
+
+\todo{Explicitly add count of data points and how many features etc.}
+
+\subsection{Iris}
+\label{chapter:iris}
+
+The IRIS \cite{fisher_use_1936} dataset is one of the mest well known datasets with plenty of avaliable solutions. This allows it to be a good example for general comparison to classical classification methods. All of the features were used in the circuit after passing through the normalization step.
+
+\subsection{Heart Failure Prediction}
+\label{chapter:heart_failure_prediction}
+
+This dataset \cite{ahmad_survival_2017} was selected due to several reason. It is biased towards the \emph{survivor} classification with roughly 68\% of the entries being of class 0, and 32\% for class 1. There also exist several high accuracy offerings when it comes to classifying the complete dataset. The solution used for comparison\cite{sakhiya_heart_nodate} achieves an accuracy of $93.33\%$. To get a direct comparison, the equal feature selection was used, even though the selection of \code{time} is usually seen as bad, due to that factor being unavaliable during real classification\footnote{In this dataset, \code{time} refers to the time during study of the patients and data collection, so a direct correlation between death and time exists, as a given time valuable can, most of the time, be attribute to death or no death. For comparisons sake, this error in feature selection was neglected, as we are only interested in achievable accuracy}
+
+\subsection{Artificial Problem}
+\label{chapter:artificial_problem}
+
+To examine the expressability of the given circuits, the artificial problem from Havlicek et al. \cite{havlicek_supervised_2019} offers a problem space that is inherently hard to solve throught classical methods. Havlicek et al. also purpose a circuit that is able to solve the given problem with perfect accuracy, which offers itself as a good comparison to the capabilities the created circuits offer.

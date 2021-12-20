@@ -1,0 +1,452 @@
+\chapter{Computational Neuron} % Chapter title
+
+\label{chapter:computational_neuron} % For referencing the chapter elsewhere, use \ref{chapter:computational_neuro} 
+
+%----------------------------------------------------------------------------------------
+
+% Define some commands to keep the formatting separated from the content 
+\newcommand{\keyword}[1]{\textbf{#1}}
+\newcommand{\tabhead}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{\bfseries#1}}
+\newcommand{\option}[1]{\texttt{\itshape#1}}
+
+%----------------------------------------------------------------------------------------
+
+\section{Classical Variant}
+The classic computational neuron, often referred to as perceptron, is a multi-step process that amounts to a single result that can be used in further neurons, or directly read out as an output. In their simplest form, the neuron has $n$ input features that are multiplied with $n$ weights. In addition to those features, there is a weighted bias, where the feature itself has the fixed value $1$. These values are then summarized and evaluated through an activation function $f(x)$. Originally proposed by Rosenblatt F.\cite{rosenblatt_perceptron_1958}, the structure of neuron with $n = 4$ input features and one bias feature is shown in figure \ref{figure:computation_neuron}\footnote{There are many iterations of this design that range from a different handling of the bias to multiple output designs like LSTMs\cite{lstm}}. A more formal definition is presented in equation \ref{equation:computation_neuron}, where $j=0$ is the bias.
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[shorten >=1pt,node distance=1.5cm,on grid,auto]
+    	\node (0) {$i_0$};
+    	\node (1) [below=of 0] {$i_1$};
+    	\node (2) [below=of 1] {$i_2$};
+    	\node (3) [below=of 2] {$i_3$};
+    	\node (4) [below=of 3] {$i_4$};
+    	\node (5) [right=of 2] {$\Sigma$};
+    	\node (6) [right=of 5] {$f(x)$};
+    	\node (7) [right=of 6] {$y$};
+    	\path[->]
+    	(0) edge [bend left=45] node {$\omega_0$} (5)
+    	(1) edge [bend left=25] node {$\omega_1$} (5)
+    	(2) edge  node {$\omega_2$} (5)
+    	(3) edge [bend right=25] node {$\omega_3$} (5)
+    	(4) edge [bend right=45] node {$\omega_4$} (5)
+    	(5) edge node {} (6)
+    	(6) edge node {} (7);
+    \end{tikzpicture}
+    \caption{Computational neuron with 4 features and 1 bias}
+    \label{figure:computation_neuron}
+\end{figure}
+
+\begin{equation}
+    \centering
+    y =\ f\left(\sum_{j = 0}^n i_j\omega_j\right)
+    \label{equation:computation_neuron}
+\end{equation}
+
+\newpage
+
+The activation function $f(x)$, also called transfer function, can be selected from a plethora of valid choices\cite{szandala_review_2021}, depending on the problem at hand. Dissecting the neuron leads to the two key components needed for the creation of an equivalent quantum neuron: A function for addition $U_{+}$ and one for multiplication $U_{\times}$ (The activation function can then be constructed from these). Whilst a single qubit can be in a coherent superposition of two different states\cite{nielsen_quantum_2010}, its measurements always amount to either 0 or 1, with their respective probabilities. Due to this the implementation uses binary data input. The implementation also neglects the usage of \emph{entanglement} and \emph{superpositions} as the arithmetic functions do not make usage of probabilistic calculations.
+
+%------------------------------------------------------------------------------------------
+\section{Binary Addition}\label{chapter:binary_addition}
+
+Binary addition allows the combination of all components $i_j\omega_j$ into a single variable $x$ used in the summation. It is also a prerequisite to creating the binary multiplication circuit. The rules that define binary addition are relatively simple and are summarized in table \ref{table:binary_addition_rules} for the expression $x_A + x_B =\ y$\\
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+$x_A$ & $x_B$ & $y$ \\ \hline
+0    & 0    & 0  \\ \hline
+0    & 1    & 1  \\ \hline
+1    & 0    & 1  \\ \hline
+1    & 1    & 0  \\ \hline
+\end{tabular}
+\caption{Binary addition of two $1$ bit wide words}
+\label{table:binary_addition_rules}
+\end{table}
+
+With table \ref{table:binary_addition_rules} a matrix $U_{+}$ can be created, that follows the given rules that apply to the creation of quantum gates\cite{scherer_quantum_2019}. Simply speaking, the matrix has to fulfill $U_{+}U_{+}^\dagger = I$. This is also often referred to as \emph{bijective} when working with functions. It dictates that any single resulting state can be followed back to a single input state. To fulfill these prerequisites, we have to use 3 qubits to assert no loss of information. The first two qubits are input bits $x_A$ and $x_B$, respectively, whilst the third one is output bit $y$. In this case, the vector $\vec{S}$ stands for any of the $2^3 = 8$ possible \emph{measurement} states the 3 qubits can be in, and vector $\vec{O}$ to any possible output state, as shown in equation \ref{equation:basic_quantum_calculation}.\\
+
+\begin{equation}
+    U_{+}\vec{S} = \vec{O} \rightarrow U_{+} =\ OS^T
+    \label{equation:basic_quantum_calculation}
+\end{equation}
+
+First we create the state matrix $S$ that represents all possible input states of our quantum circuit.
+
+\begin{equation}
+    \begin{split}
+        \vec{S_0} =\ \ket{0} \otimes \ket{0} \otimes \ket{0} &=\ \begin{pmatrix} 1 \\ 0\end{pmatrix}\ \otimes \begin{pmatrix}1 \\ 0\end{pmatrix} \otimes \begin{pmatrix}1 \\ 0\end{pmatrix} =\ \begin{pmatrix}1 \\0 \\0 \\0 \\0 \\0 \\0 \\0 \end{pmatrix}\\
+        \rightarrow S &= I^{8\times8}
+    \end{split}
+    \label{equation:state_matrix_is_identity_matrix}
+\end{equation}
+
+Using the same method and the information from table \ref{table:binary_addition_rules} we construct the output state matrix $O$ in equation \ref{equation:addition_output_matrix}.
+
+\begin{equation}
+    \begin{split}
+        \text{1. Row:}\ x_{A} + x_{B} = y \rightarrow \ket{0} + \ket{0} = \ket{0}\\    
+        \text{2. Row:}\ x_{A} + x_{B} = y \rightarrow \ket{0} + \ket{1} = \ket{1}\\    
+        \text{3. Row:}\ x_{A} + x_{B} = y \rightarrow \ket{1} + \ket{0} = \ket{1}\\    
+        \text{4. Row:}\ x_{A} + x_{B} = y \rightarrow \ket{1} + \ket{1} = \ket{0}\\    
+    \end{split}
+\end{equation}
+
+\begin{equation}
+\centering
+    \begin{split}
+        \vec{O}_0 &=\ \ket{0} \otimes \ket{0} \otimes \ket{0} =\ \begin{pmatrix}1 \\0 \\0 \\0 \\0 \\0 \\0 \\0 \end{pmatrix} \\
+        \rightarrow O &=\ \begin{pmatrix}
+        1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+        0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
+        0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
+        0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
+        0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
+        0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
+        0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 &1
+        \end{pmatrix}
+    \end{split}
+    \label{equation:addition_output_matrix}
+\end{equation}
+
+Note that the matrix $O$ in equation \ref{equation:addition_output_matrix} can be flipped, depending on what qubit is selected as output. The two matrices $O$ and $S$ can now be inserted into the equation $U_{+} = OS^T$ and solved for $U_{+}$, as per equation \ref{equation:addition_matrix_solved}
+
+\begin{equation}
+    \begin{split}
+        U_{+} =\ OS^T &=\ \begin{pmatrix}
+        1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+        0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
+        0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
+        0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
+        0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
+        0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
+        0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 &1
+        \end{pmatrix}\begin{pmatrix}
+         1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+         0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\ 
+         0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
+         0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
+         0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
+         0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
+         0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+        \end{pmatrix} \\ 
+        \rightarrow U_{+} &=\ \begin{pmatrix}
+        1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+        0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
+        0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
+        0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
+        0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
+        0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
+        0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 &1
+        \end{pmatrix}
+    \end{split}
+    \label{equation:addition_matrix_solved}
+\end{equation}
+\newpage
+
+Using IBMs \code{qiskit} the calculated matrix $U_{+}$ is turned into a quantum gate.
+
+\begin{minted}{python}
+from qiskit import QuantumCircuit
+import qiskit.quantum_info as qi
+
+n_qubits = 3
+
+#Create the Gate
+addition = qi.Operator([[1, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 1, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 1, 0],
+                        [0, 0, 0, 1, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 1, 0, 0, 0],
+                        [0, 1, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 1, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 1]])
+\end{minted}
+
+Binary addition that allows for bit words longer than one use a carry bit, which is then used as the input for the next addition. As the carry over is not always needed, we will use a separate quantum gate to calculate it. The rules for binary addition with carry over are listed in table \ref{table:binary_addition_carry_over}
+
+\begin{table}[!h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        $carry_{in}$ & $x_A$ & $x_B$ & $y$ & $carry_{out}$ \\ \hline
+        0             & 0     & 0     & 0   & 0              \\ \hline
+        1             & 0     & 0     & 1   & 0              \\ \hline
+        0             & 0     & 1     & 1   & 0              \\ \hline
+        1             & 0     & 1     & 0   & 1              \\ \hline
+        0             & 1     & 0     & 1   & 0              \\ \hline
+        1             & 1     & 0     & 0   & 1              \\ \hline
+        0             & 1     & 1     & 0   & 1              \\ \hline
+        1             & 1     & 1     & 1   & 1              \\ \hline
+        \end{tabular}
+    \caption{Binary addition with carry over}
+    \label{table:binary_addition_carry_over}
+\end{table}
+
+\newpage
+
+
+As part $x_A + x_B = y$ is solved, only a solution for the $carry_{out}$ is created. It is important to note here that the $carry_{in}$ bit from table \ref{table:binary_addition_carry_over} is being reused as output bit $y$. Using the \emph{Toffoli Gate}, also called \code{CCNOT}\cite{qiskit_ccxgate_nodate}, we can use two controlling qubits to invert the state of a third one as demonstrated with figure \ref{fig:carry_over_circuit}.
+
+\begin{figure}[!h]
+    \centering
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.8em @!R {
+            \nghost{ {q}_{0} :  } & \lstick{ x_{A} :  } & \ctrl{1} & \qw & \ctrl{2} & \qw & \qw\\
+            \nghost{ {q}_{1} :  } & \lstick{ x_{B} :  } & \ctrl{2} & \ctrl{1} & \qw & \qw & \qw\\
+            \nghost{ {q}_{2} :  } & \lstick{ carry_{in}/y :      } & \qw & \ctrl{1} & \ctrl{1} & \qw & \qw\\
+            \nghost{ {q}_{3} :  } & \lstick{ carry_{out} :  } & \targ & \targ & \targ & \qw & \qw\\ 
+        }
+    }
+    \caption{Quantum circuit to calculate the carry over bit}
+    \label{fig:carry_over_circuit}
+\end{figure}
+
+Combining these two solutions, we construct a quantum circuit to add any $n$ bit wide words together. Figure \ref{figure:four_bit_full_adder} demonstrates a circuit for the addition of two $4$ bit wide words\footnote{Note that we have replaced the X gates used previously to set the initial state with parameterized RX gates, where any variable that is $z = \pi$ leads to $\ket{1}$ and $z = 0$ to $\ket{0}$}.
+
+\begin{figure}[!h]
+    \centering
+    \scalebox{0.5}{
+    \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \ghost{ {q}_{0} :  } & \lstick{ x_{A0} :  } & \gate{\mathrm{R_X}\,(\mathrm{a{\ensuremath{\theta}}})} \barrier[0em]{12} & \qw & \multigate{3}{\mathrm{carry\,over}}_<<<{0} & \multigate{2}{\mathrm{addition}}_<<<{0} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{1} :  } & \lstick{ x_{B0} :  } & \gate{\mathrm{R_X}\,(\mathrm{b{\ensuremath{\theta}}})} & \qw & \ghost{\mathrm{carry\,over}}_<<<{1} & \ghost{\mathrm{addition}}_<<<{1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{2} :  } & \lstick{ y_{0} :  } & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{2} & \ghost{\mathrm{addition}}_<<<{2} & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{3} :  } & \lstick{ carry_0 :  } & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{3} & \multigate{3}{\mathrm{carry\,over}}_<<<{2} & \qw & \multigate{2}{\mathrm{addition}}_<<<{2} & \meter & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{4} :  } & \lstick{ x_{A1} :  } & \gate{\mathrm{R_X}\,(\mathrm{c{\ensuremath{\theta}}})} & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{0} & \qw & \ghost{\mathrm{addition}}_<<<{0} & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{5} :  } & \lstick{ x_{B1} :  } & \gate{\mathrm{R_X}\,(\mathrm{d{\ensuremath{\theta}}})} & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{1} & \qw & \ghost{\mathrm{addition}}_<<<{1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{6} :  } & \lstick{ carry_1 :  } & \qw & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{3} & \qw & \multigate{3}{\mathrm{carry\,over}}_<<<{2} & \qw & \multigate{2}{\mathrm{addition}}_<<<{2} & \meter & \qw & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{7} :  } & \lstick{ x_{A2} :  } & \gate{\mathrm{R_X}\,(\mathrm{e{\ensuremath{\theta}}})} & \qw & \qw & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{0} & \qw & \ghost{\mathrm{addition}}_<<<{0} & \qw & \qw & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{8} :  } & \lstick{ x_{B2} :  } & \gate{\mathrm{R_X}\,(\mathrm{f{\ensuremath{\theta}}})} & \qw & \qw & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{1} & \qw & \ghost{\mathrm{addition}}_<<<{1} & \qw & \qw & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{9} :  } & \lstick{ carry_2 :  } & \qw & \qw & \qw & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{3} & \qw & \multigate{3}{\mathrm{carry\,over}}_<<<{2} & \qw & \multigate{2}{\mathrm{addition}}_<<<{2} & \meter & \qw & \qw\\ 
+        \ghost{ {q}_{10} :  } & \lstick{ x_{A3} :  } & \gate{\mathrm{R_X}\,(\mathrm{g{\ensuremath{\theta}}})} & \qw & \qw & \qw & \qw & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{0} & \qw & \ghost{\mathrm{addition}}_<<<{0} & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{11} :  } & \lstick{ x_{B3} :  } & \gate{\mathrm{R_X}\,(\mathrm{h{\ensuremath{\theta}}})} & \qw & \qw & \qw & \qw & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{1} & \qw & \ghost{\mathrm{addition}}_<<<{1} & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{12} :  } & \lstick{ carry_3 :  } & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{3} & \qw & \qw & \qw & \qw & \qw\\ 
+        \ghost{c:} & \lstick{c:} & \lstick{/_{_{4}}} \cw & \cw & \cw & \cw & \dstick{_{_{0}}} \cw \cwx[-11] & \cw & \dstick{_{_{1}}} \cw \cwx[-10] & \cw & \dstick{_{_{2}}} \cw \cwx[-7] & \cw & \dstick{_{_{3}}} \cw \cwx[-4] & \cw & \cw\\ 
+        }
+    }
+    \caption{$4$ bit wide full adder\todo{add more explanation to image}}
+    \label{figure:four_bit_full_adder}
+\end{figure}
+
+In figure \ref{figure:four_bit_full_adder} the $i$ in $x_{Ai}$ and $x_{Bi}$ stands for the $i$th bit in the word, starting with the LSB\footnote{Least significant bit}. Both the \emph{carry over} and \emph{addition} gates are the previously discussed ones. The numbering on their input side resembles the mapping of the incoming qubit to the \emph{internal qubit}. The figure also illustrates how the $carry_i$ qubit is reused as output qubit of the next addition step.
+
+%----------------------------------------------------------------------------------------
+\newpage
+
+\section{Binary multiplication}
+\label{chapter:binary_multiplication}
+
+Using the same steps as in chapter \ref{chapter:binary_addition}, table \ref{table:binary_multiplication_rules} illustrates the binary multiplication rules.
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+$x_A$ & $x_B$ & $y$ \\ \hline
+0     & 0     & 0   \\ \hline
+0     & 1     & 0   \\ \hline
+1     & 0     & 0   \\ \hline
+1     & 1     & 1   \\ \hline
+\end{tabular}
+\caption{Binary multiplication rules}
+\label{table:binary_multiplication_rules}
+\end{table}
+
+The defined rules resemble only a subset of what makes binary multiplication work. The results of the multiplication get shifted one by one and then summarized. Figure \ref{figure:binary_multiplication_example} illustrates the procedure with a basic example.
+
+\begin{figure}[!h]
+\centering
+\begin{tabular}{clllccllll}
+$x_A$                   &  &   &   & 1                     & 0                     & 1 & 1 & 0 & 1 \\
+$x_B$                   &  &   &   &                       &                       &   & 1 & 0 & 1 \\ \hline
+                        &  &   &   & 1                     & 0                     & 1 & 1 & 0 & 1 \\
+                        &  &   & 0 & 0                     & 0                     & 0 & 0 & 0 & X \\
+$+$                     &  & 1 & 0 & 1                     & 1                     & 0 & 1 & X & X \\ \hline
+\multicolumn{1}{l}{$y$} &  & 1 & 1 & \multicolumn{1}{l}{1} & \multicolumn{1}{l}{0} & 0 & 0 & 0 & 1
+\end{tabular}
+\caption{Binary multiplication example}
+\label{figure:binary_multiplication_example}
+\end{figure}
+
+Combining quantum rules and our multiplication ruleset creates a problem, as illustrated in table \ref{table:three_qubit_state_multiplications}
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+$\ket{\psi_{in}}$ & $\ket{\psi_{out}}$ \\ \hline
+000               & 000                \\ \hline
+001               & 000                \\ \hline
+010               & 010                \\ \hline
+011               & 010                \\ \hline
+100               & 100                \\ \hline
+101               & 100                \\ \hline
+110               & 111                \\ \hline
+111               & 111                \\ \hline
+\end{tabular}
+\caption{3 qubit state multiplications}
+\label{table:three_qubit_state_multiplications}
+\end{table}
+
+Table \ref{table:three_qubit_state_multiplications} shows multiple states in $\ket{\psi_{out}}$ that are duplicates, which, as discussed in chapter \ref{chapter:binary_addition}, is not allowed. With this information at hand we have to \emph{cheat} the system by assuming that any implementation will make sure the $y_{in}$ is always $\ket{0}$. Table \ref{table:three_qubit_state_multiplications_corrected} is corrected for the new behaviour which fulfills all requirements.
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+$\ket{\psi_{in}}$ & $\ket{\psi_{out}}$ \\ \hline
+000               & 000                \\ \hline
+001               & 001                \\ \hline
+010               & 010                \\ \hline
+011               & 011                \\ \hline
+100               & 100                \\ \hline
+101               & 101                \\ \hline
+110               & 111                \\ \hline
+111               & 110                \\ \hline
+\end{tabular}
+\caption{3 qubit state multiplications corrected}
+\label{table:three_qubit_state_multiplications_corrected}
+\end{table}
+
+\newpage
+
+The solution is not perfect, but binary multiplication does not use $y_{in} = 1$ in its rule set and therefor, any implementation where that behavior does happen, is either on \emph{purpose} or due to an implementation error. As a security measure, later implementations could simply reset $y_{in}$ before any calculations are done. Equation \ref{equation:state_matrix_is_identity_matrix} demonstrates that the state matrix $S$ equals the identitiy matrix $I$ of the same dimensionality (as we have 3 qubits, we get $2^3 = 8$). The output matrix $O$ is constructed using the defined states in table \ref{table:three_qubit_state_multiplications_corrected} and then used to calculate $U_{\times}$ as shown in equation \ref{equation:multiplication_matrix_solved}.
+
+\begin{equation}
+    \begin{split}
+        U_{\times} =\ OS^T &=\ \begin{pmatrix}
+         1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+         0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
+         0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+         0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
+         0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
+         0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
+         0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
+         \end{pmatrix}\begin{pmatrix}
+         1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+         0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\ 
+         0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
+         0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
+         0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
+         0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
+         0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+        \end{pmatrix} \\ 
+        \rightarrow U_{\times} &=\ \begin{pmatrix}
+         1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+         0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
+         0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
+         0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+         0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
+         0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
+         0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
+         0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
+         \end{pmatrix}
+    \end{split}
+    \label{equation:multiplication_matrix_solved}
+\end{equation}
+
+\newpage
+The calculated matrix $U_{\times}$ is then applied in \code{qiskit}, which creates the corresponding gate.
+
+\begin{minted}{python}
+from qiskit import QuantumCircuit
+import qiskit.quantum_info as qi
+
+n_qubits = 3
+
+#Create the Gate
+multiplication = qi.Operator([[1, 0, 0, 0, 0, 0, 0, 0],
+                              [0, 1, 0, 0, 0, 0, 0, 0],
+                              [0, 0, 1, 0, 0, 0, 0, 0],
+                              [0, 0, 0, 0, 0, 0, 0, 1],
+                              [0, 0, 0, 0, 1, 0, 0, 0],
+                              [0, 0, 0, 0, 0, 1, 0, 0],
+                              [0, 0, 0, 0, 0, 0, 1, 0],
+                              [0, 0, 0, 1, 0, 0, 0, 0]])
+\end{minted}
+
+With $U_{\times}$ and $U_{\add}$ calculated and the \emph{carry over} gate defined, a full binary multiplier can be constructed, as shown in figure \ref{figure:two_bit_wide_multiplier}.
+
+\begin{figure}[!h]
+    \centering
+        \scalebox{0.41}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \ghost{ x_{A0} :  } & \lstick{ x_{A0} :  } & \gate{\mathrm{R_X}\,(\mathrm{a{\ensuremath{\theta}}})} \barrier[0em]{9} & \qw & \multigate{4}{\mathrm{multiplication}}_<<<{0} & \multigate{5}{\mathrm{multiplication}}_<<<{0} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+        \ghost{ x_{A1} :  } & \lstick{ x_{A1} :  } & \gate{\mathrm{R_X}\,(\mathrm{b{\ensuremath{\theta}}})} & \qw & \ghost{\mathrm{multiplication}} & \ghost{\mathrm{multiplication}} & \multigate{5}{\mathrm{multiplication}}_<<<{0} & \qw & \multigate{6}{\mathrm{multiplication}}_<<<{0} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+        \ghost{ x_{B0} :  } & \lstick{ x_{B0} :  } & \gate{\mathrm{R_X}\,(\mathrm{c{\ensuremath{\theta}}})} & \qw & \ghost{\mathrm{multiplication}}_<<<{1} & \ghost{\mathrm{multiplication}} & \ghost{\mathrm{multiplication}}_<<<{1} & \qw & \ghost{\mathrm{multiplication}} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+        \ghost{ x_{B1} :  } & \lstick{ x_{B1} :  } & \gate{\mathrm{R_X}\,(\mathrm{d{\ensuremath{\theta}}})} & \qw & \ghost{\mathrm{multiplication}} & \ghost{\mathrm{multiplication}}_<<<{1} & \ghost{\mathrm{multiplication}} & \qw & \ghost{\mathrm{multiplication}}_<<<{1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\ 
+        \ghost{ y_0 :  } & \lstick{ y_0 :  } & \qw & \qw & \ghost{\mathrm{multiplication}}_<<<{2} & \ghost{\mathrm{multiplication}} & \ghost{\mathrm{multiplication}} & \meter & \ghost{\mathrm{multiplication}} & \gate{\mathrm{\left|0\right\rangle}} & \multigate{4}{\mathrm{carry\,over}}_<<<{2} & \multigate{2}{\mathrm{addition}}_<<<{2} & \meter & \gate{\mathrm{\left|0\right\rangle}} & \multigate{5}{\mathrm{carry\,over}}_<<<{2} & \multigate{4}{\mathrm{addition}}_<<<{2} & \meter & \qw & \qw\\ 
+        \ghost{ {q}_{5} :  } & \lstick{ {q}_{5} :  } & \qw & \qw & \qw & \ghost{\mathrm{multiplication}}_<<<{2} & \ghost{\mathrm{multiplication}} & \qw & \ghost{\mathrm{multiplication}} & \qw & \ghost{\mathrm{carry\,over}}_<<<{0} & \ghost{\mathrm{addition}}_<<<{0} & \qw & \qw & \ghost{\mathrm{carry\,over}} & \ghost{\mathrm{addition}} & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{6} :  } & \lstick{ {q}_{6} :  } & \qw & \qw & \qw & \qw & \ghost{\mathrm{multiplication}}_<<<{2} & \qw & \ghost{\mathrm{multiplication}} & \qw & \ghost{\mathrm{carry\,over}}_<<<{1} & \ghost{\mathrm{addition}}_<<<{1} & \qw & \qw & \ghost{\mathrm{carry\,over}} & \ghost{\mathrm{addition}} & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{7} :  } & \lstick{ {q}_{7} :  } & \qw & \qw & \qw & \qw & \qw & \qw & \ghost{\mathrm{multiplication}}_<<<{2} & \qw & \ghost{\mathrm{carry\,over}} & \qw & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{0} & \ghost{\mathrm{addition}}_<<<{0} & \qw & \qw & \qw\\ 
+        \ghost{ {q}_{8} :  } & \lstick{ {q}_{8} :  } & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{3} & \qw & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{1} & \ghost{\mathrm{addition}}_<<<{1} & \qw & \qw & \qw\\ 
+        \ghost{ y_1 :  } & \lstick{ y_1 :  } & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{3} & \meter & \qw & \qw & \qw\\ 
+        \ghost{c:} & \lstick{c:} & \lstick{/_{_{4}}} \cw & \cw & \cw & \cw & \cw & \dstick{_{_{0}}} \cw \cwx[-6] & \cw & \cw & \cw & \cw & \dstick{_{_{1}}} \cw \cwx[-6] & \cw & \cw & \dstick{_{_{3}}} \cw \cwx[-1] & \dstick{_{_{2}}} \cw \cwx[-6] & \cw & \cw\\ 
+        \\ }}
+    \caption{$2$ bit wide multiplier\todo{add more explanation to image}}
+    \label{figure:two_bit_wide_multiplier}
+\end{figure}
+
+\newpage 
+
+Figure \ref{figure:two_bit_wide_multiplier} shows a circuit that can multiply two $2$ bit wide words. The presented form is optimized, as in, the qubit that has been measured is reset and reused for the next calculation step. In comparison to an non-optimized solution, this reduces the amount of required qubits, in this example, from $12$ to $10$. Figure \ref{figure:two_bit_wide_multiplier} requires quantum hardware with \emph{at least} 10 qubits to run. Equations \ref{equation:1_bit_multiplier} and \ref{equation:2_bit_multiplier} demonstrate how the required amount of qubits can be calculated. $n_{bits} = 1$ is a special case, as the multiplications result is always a $1$ bit wide. With $n_{bits} > 1$ the results length $l$ is in the range $n_{bits} \leq l \leq 2n_{bits}$
+
+\begin{equation}\label{equation:1_bit_multiplier}
+\centering
+    \begin{split}
+        n_{bits} &= 1 \\
+        n_{measure} &= 1\\
+        n_{qubits} &= 2n_{bits} + n_{measure} = 3
+    \end{split}
+\end{equation}
+
+$n_{bits} > 1$ adds a special rules that can be observed in figure \ref{figure:two_bit_wide_multiplier}. The intermediate results of every multiplication, except the first, must be preserved. Additional qubits are then needed to act as $carry$ for the binary addition. For this case, $n_{carry}$ equals $1$ as we can reuse the last measurement qubit. This was omitted in equation \ref{equation:1_bit_multiplier} as there was no need for binary addition. Note that $n_{measure}$ is always $2$ as we can reuse the first measurement, but need a second one for the last measurment.
+
+\begin{equation}\label{equation:2_bit_multiplier}
+\centering
+    \begin{split}
+        n_{bits} &= 2 \\
+        n_{U_{\times}} &= 2n_{bits} -1 \\
+        n_{measure} &= 2\\
+        n_{carry} &= 1\\
+        n_{qubits} &= 2n_{bits} + n_{U_{\times}} + n_{carry} + n_{measure} = 10
+    \end{split}
+\end{equation}
+
+Any larger sizes could not be create, and therefor, evaluated. The required amount of qubits needed to create and simulate a circuit for a $3$ bit wide multiplier disallowed any experiments, as the \code{qiskit} simulator could not handle it. It is expected that the amount of qubits increases \emph{at least} linearly. The amount of binary additions required in the classical solution for $n_{bits}$ are listed in \ref{table:amount_addition_binary_multiplication}.
+
+\begin{table}[!h]
+    \centering
+    \begin{tabular}{|c|c|}
+    \hline
+    $n_{bits}$ & amount of additions \\ \hline
+    1          & 0                   \\ \hline
+    2          & 1                   \\ \hline
+    3          & 4                   \\ \hline
+    4          & 9                   \\ \hline
+    \end{tabular}
+    \caption{Binary addition steps for $n_{bits}$ in a classical solution}
+    \label{table:amount_addition_binary_multiplication}
+\end{table}
+
+
+\newpage
+
+%-------------------------------------------
+
+\section{Conclusion}
+
+The solutions presented in this chapter show that replication of a computational neuron is possible. The amount of required qubits for the implementation of basic circuits seems a deterrent when further pursuing this solution. Current quantum solutions for classical problems like \emph{Multiple Query Optimization} as demonstrated by Fankhauser et al.\cite{fankhauser_multiple_2021} can be solved without the need to replicate classical methods with the usage of superpositions and entanglement, which are completely absent from the solutions presented in chapters \ref{chapter:binary_addition} and \ref{chapter:binary_multiplication}. 
+
+This does not mean that the proposed circuits serve no purpose. These could, in the future, be used to allow basic arithmetic on quantum-only devices. The reversed state of the $n$-bit multiplier shown in figure \ref{figure:two_bit_wide_multiplier} could be adapted, using superpositions and entanglement, to calculate two factors used to calculate the given value.
+\todo{Quantum vorteil?}

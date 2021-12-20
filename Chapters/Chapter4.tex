@@ -1,0 +1,202 @@
+% Chapter 4
+
+\chapter{Results} % Main chapter title
+
+\label{chapter:results}
+
+The results in the chapters are of condensed form. Please referr to appendix \ref{appendix:boxplots} for more detailed figures. The following figures of this chapter use display the achieved accuracy on the y axis, and the number of the circuit on the x axis and are limited to only the achieved testing accuracy. For the randomized segments, 10 training runs had its own data shuffling, which was used for every circuit.
+%----------------------------------------------------------------------------------------
+\def \newboxplotwidth {230pt}
+
+
+\subsection{Non Randomized IRIS}
+\label{chapter:iris_non_randomized}
+
+\todo{Add axis description to all plots}
+
+\begin{figure}[!h]
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/iris/non_randomized_split/Comparison_of_all_circuits_with_non_randomized,_raw_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/iris/non_randomized_split/Comparison_of_all_circuits_with_non_randomized,_normalized_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/iris/non_randomized_split/Comparison_of_all_circuits_with_non_randomized,_pified_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/iris/non_randomized_split/MLP_on_non_randomized,_raw_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/iris/non_randomized_split/MLP_on_non_randomized,_normalized_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/iris/non_randomized_split/MLP_on_non_randomized,_pified_data.svg}
+    \end{subfigure}
+    \caption{Comparison of test results from all trained circuits on the non randomized IRIS dataset}
+    \label{fig:circuits_results_non_r_iris}
+\end{figure}
+\clearpage
+
+\subsection{Randomized IRIS}
+\label{chapter:iris_randomized}
+
+\begin{figure}[!h]
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/iris/randomized_split/Comparison_of_all_circuits_with_randomized,_raw_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/iris/randomized_split/Comparison_of_all_circuits_with_randomized,_normalized_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/iris/randomized_split/Comparison_of_all_circuits_with_randomized,_pified_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/iris/randomized_split/MLP_on_randomized,_raw_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/iris/randomized_split/MLP_on_randomized,_normalized_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/iris/randomized_split/MLP_on_randomized,_pified_data.svg}
+    \end{subfigure}
+    \caption{Comparison of test results from all trained circuits on the randomized IRIS dataset}
+    \label{fig:circuits_results_r_iris}
+\end{figure}
+
+\clearpage 
+\subsection{Non Randomized Heart Failure Prediction}
+\label{chapter:heart_failure_prediction_non_randomized}
+
+\begin{figure}[!h]
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/heart_failure/non_randomized_split/Comparison_of_all_circuits_with_non_randomized,_raw_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/heart_failure/non_randomized_split/Comparison_of_all_circuits_with_non_randomized,_normalized_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/heart_failure/non_randomized_split/Comparison_of_all_circuits_with_non_randomized,_pified_data.svg}
+    \end{subfigure}
+    \caption{Comparison of test results from all trained circuits on the non randomized Heart Failure dataset}
+    \label{fig:circuits_results_non_r_hf}
+\end{figure}
+
+\clearpage 
+\subsection{Randomized Heart Failure Prediction}
+\label{chapter:heart_failure_prediction_randomized}
+
+\begin{figure}[!h]
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/heart_failure/randomized_split/Comparison_of_all_circuits_with_randomized,_raw_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/heart_failure/randomized_split/Comparison_of_all_circuits_with_randomized,_normalized_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/heart_failure/randomized_split/Comparison_of_all_circuits_with_randomized,_pified_data.svg}
+    \end{subfigure}
+    \caption{Comparison of test results from all trained circuits on the non randomized Hearth Failure dataset}
+    \label{fig:circuits_results_r_hf}
+\end{figure}
+
+\clearpage 
+\subsection{Non-randomized Artificial Problem}
+\label{chapter:artificial_problem_non_randomized}
+
+\begin{figure}[!h]
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/artificial_problem/non_randomized_split/Comparison_of_all_circuits_with_non_randomized,_raw_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/artificial_problem/non_randomized_split/Comparison_of_all_circuits_with_non_randomized,_normalized_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/artificial_problem/non_randomized_split/Comparison_of_all_circuits_with_non_randomized,_pified_data.svg}
+    \end{subfigure}
+    \caption{Comparison of test results from all trained circuits on the non randomized Artificial Problem dataset}
+    \label{fig:circuits_results_non_r_ap}
+\end{figure}
+
+\clearpage 
+\subsection{Randomized Artificial Problem}
+\label{chapter:artificial_problem_randomized}
+\begin{figure}[!h]
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/artificial_problem/randomized_split/Comparison_of_all_circuits_with_randomized,_raw_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/artificial_problem/randomized_split/Comparison_of_all_circuits_with_randomized,_normalized_data.svg}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includesvg[width = \newboxplotwidth]
+        {Appendices/boxplots/artificial_problem/randomized_split/Comparison_of_all_circuits_with_randomized,_pified_data.svg}
+    \end{subfigure}
+    \caption{Comparison of test results from all trained circuits on the non randomized Artificial Problem dataset}
+    \label{fig:circuits_results_r_ap}
+\end{figure}
+
+\clearpage
+
+\section{Discussion}
+The results achieved when training was done with static training/test data shuffle shows that due to the nature of probabilistic measurements, one can not \emph{naturally} expect to achieve the same accuracy every time training is done. As stated in chapter \ref{chapter:datasets}, we did not fixate the seed of the random measurements the simulator does on a quantum circuit, as this cannot be done on real hardware.\par 
+The collected data shows that even an usable circuit that \emph{can} achieve perfect testing accuracy, as seen in figure \ref{fig:circuits_results_r_ap}, it will often end up in an acceptable range of $[0.7, 0.8]$ accuracy. When compared to the circuit used by Havlicek et al.\cite{havlicek_supervised_2019}, which was adapted to be trained by the same methods, it achieved near perfect \emph{or} perfect accuracy from the beginning of the training. This leads to the assumption, that whilst some circuits might be easier to adapt to the problem space, and therefor, easier to learn, one cannot guarantee that a given circuit will always lead to the same results. This is also shown when comparing our Heart Failure results to the referred solution, whilst we had cases where we beat the solution, most achieved scores were below the $0.933$ of the comparison solution.\par 
+It is important to remind that due to the unavailability of real hardware to perform long training sessions on, we used solely a simulator and reduced the amount of measurement shots (which get summed up to display the probabilities) to 1024, which can be seen as not enough. When comparing to the solution of Havlicek et al., we can see that better adapted circuits \emph{will} achieve better resulting accuracy, faster, than general purpose circuits. It is to be seen if such a circuit can be dynamically built for every problem space, or if carefully handpicked designs are the way to go.\par
+All of the shown figures in chapter \ref{chapter:results} display an overall increase in achieved accuracy from the performed normalization which scaled down the feature space to the range $[-1,1]$. Further observations show that there is a net loss of achieved accuracy when using a normalization with the range $[-\pi,\pi]$ on IRIS. An explanation is that any rotations that go beyond the point of $\ket{0}$ and $\ket{1}$ start to \emph{decrease} the probability of the given state again, even though initially, it was increasing it. When looking at the range of achieved accuracy for IRIS, the net gain for a normalization on $[-1,1]$ is in the range of $[0.020,0.028]$ and for the normalization on range $[-\pi,\pi]$ it was net loss of $[-0.059,-0.054]$. The same comparison on the heart failure data leads to a net gain of $[0.087, 0.229]$ for $[-1,1]$ and a net gain of $[0.070,0.131]$ for $[-\pi,\pi]$. \par
+When observing the raw features of the IRIS dataset, we can observe that normalizing to $[-\pi,\pi]$ increases the total range of single features, which makes the feature space more \emph{sparse}, whilst in the Heart Failure dataset it decreases the range of single features, therefor making them more dense. This explains how with IRIS a net loss and with Heart Failure a net gain is achieved. \par
+The data also suggests, that given an enough complex quantum circuit, it is possible for it to achieve excellent classification results for any given dataset. This can be seen in figures \ref{fig:circuits_results_non_r_iris} up to \ref{fig:circuits_results_r_ap}, where circuit $4$ managed to achieve good results across all datasets. This is supported by the findings of Sim et al.\cite{sim_expressibility_2019}, which show that combinations of gates can make use of a wider range of possible states, therefor making them more capable of trespassing the problem space.
+\clearpage
+\section{Conclusion}
+Taking together all results from this research shows that whilst quantum circuits are highly dynamic and adaptable to multiple problem spaces, the probabilistic measurements and that versatility can backfire whilst creating and training circuits with the goal of classifying datasets. There appears to be a need for multiple evaluations under the same conditions before one can truly assess the capabilities of a given quantum classifier to solve the problem space. When creating a classification circuit, it is important to narrow down the expressiveness of the circuit so that training and accuracy is less sparse and resulting scores more reproducible. Further experiments on quantum classification algorithms should aim at creating a base state in the circuit, which could help limiting the possible problem space, there for enhancing the achievable accuracy score as well as reducing total training duration.
+
+
+
+
+\todo{Conclusion is it possible to create a circuit to can solve a given problem space?}
