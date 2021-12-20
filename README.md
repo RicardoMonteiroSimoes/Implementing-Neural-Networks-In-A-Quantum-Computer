@@ -1,30 +1,19 @@
-# ZHAW thesis template
-This is a template for LaTeX thesis (M.Sc. or PhD) at [Zurich University of Applied Sciences, ZHAW](https://www.zhaw.ch/).
-This repository was created to relieve future students of the tedious work of thesis formatting. 
-Make sure that it meets your programme specific requirements and the details that need to be discussed with the supervisor. 
+# Implementing Neural Networks In A Quantum Computer
+This research paper was written at the ZHAW in our penultimate semester of our BSc CS degree course. 
+Many thanks go out to the creator of the initial LaTeX template we used for this, [@matteodelucchi](https://github.com/matteodelucchi). The original can be found [here](https://github.com/matteodelucchi/ZHAW_thesis-template). Our usage was adapted for the PA every undergraduate (that isn't parttime _and_ dispensated from doing it) has to do and will find it's way back as a fork once we have finished our work.
 
-## Usage
+## Contributors
+This research paper was written by [@RicardoMonteiroSimoes](https://github.com/RicardoMonteiroSimoes) and [@22phuber](https://github.com/22phuber). It was supported by two advisors, which consist of:
+
+- [Prof. Dr. Kurt Stockinger](https://www.zhaw.ch/de/ueber-uns/person/stog/)
+- [Prof. Dr. Rudolf Marcel Füchslin](https://www.zhaw.ch/de/ueber-uns/person/furu/)
+
+## Thanks
 I found it very convenient to use this template in [Overleaf.com](https://www.overleaf.com/). This allowed me to share it with my supervisor, who could comment directly in the document.  
 Fork this Github repository to your Github account. Then you login to [Overleaf.com](https://www.overleaf.com/) -> *New Project* -> *Import from Github* and select your fork of the thesis template.
 
-## Contribution 
-Feel free to contribute to this project to improve it. 
-
-## Versions
-For major (i.e. study program specific) changes, I suggest to have multiple branches which are going to be explained here. 
-The current master branch was used for a Master thesis of the [Applied Computational Life Sciences Master program](https://www.zhaw.ch/en/lsfm/institutes-centres/ias/study-teaching/master/) at the [Institute of Applied Simulations](https://www.zhaw.ch/en/lsfm/institutes-centres/ias-institute-of-applied-simulation/) from the department [Life Science and Facility Management](https://www.zhaw.ch/en/lsfm/).
 
 ## Authorship \& Licence
-This template was adapted by Matteo Delucchi based on a template downloaded from:  
-[LaTeXTemplates.com](http://www.latextemplates.com/template/masters-doctoral-thesis)
-
-Version 2.x major modifications by:  
-[Vel](vel@latextemplates.com)
-
-This template is based on a template by:  
-[Steve Gunn](http://users.ecs.soton.ac.uk/srg/softwaretools/document/templates/)  
-[Sunil Patel](http://www.sunilpatel.co.uk/thesis-template/)
-
-Template license:  
-CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+The original template was adapted by Ricardo Monteiro Simoesased on a template downloaded from:  
+[Original ZHAW thesis template](https://github.com/matteodelucchi/ZHAW_thesis-template)
 
