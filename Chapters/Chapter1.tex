@@ -18,13 +18,13 @@
 %----------------------------------------------------------------------------------------
 
 \section{Quantum Data Encoding}\label{section:quantum_data_encoding}
-Quantum data encoding or quantum data embedding\footnote{The terms \textit{encoding} and \textit{embedding} can be used interchangeably in this context.} describes the process of loading classical data in a quantum circuit by encoding it into the state of the qubits. In fact the classical data is encoded in a Hilbert space using a quantum feature map.
+Quantum data encoding or quantum data embedding\footnote{The terms \textit{encoding} and \textit{embedding} can be used interchangeably in this context.} describes the process of loading classical data in a quantum circuit by encoding it into the state of the qubits. In fact the classical data is encoded in a Hilbert space using a quantum feature map. 
 
-There are multiple ways of encoding classical data onto quantum states (see list \ref{list:encoding_patterns}) using a quantum feature map which directly affects the computational power of the quantum circuit, emphasizing that the encoding is a crucial part in designing quantum algorithms.\cite{Quantum_machine_learning_in_feature_Hilbert_spaces_2019,Supervised_learning_with_quantum-enhanced_feature_spaces_2019,Quantum_embeddings_for_machine_learning_2020,PennyLane_QuantumEmbedding,PennyLane_QuantumFeatureMap,schuld2021supervised,leymann2019pattern}\break{}
+There are multiple ways of encoding classical data onto quantum states (see list \ref{list:encoding_patterns}) using a quantum feature map which directly affects the computational power of the quantum circuit, emphasizing that the encoding is a crucial part in designing quantum algorithms.\cite{Quantum_machine_learning_in_feature_Hilbert_spaces_2019,Supervised_learning_with_quantum-enhanced_feature_spaces_2019,Quantum_embeddings_for_machine_learning_2020,PennyLane_QuantumEmbedding,PennyLane_QuantumFeatureMap,schuld2021supervised,leymann2019pattern}\par
 
 \noindent An incomplete list of encoding patterns for quantum algorithms\cite{schuld2021supervised,Weigold2021_ExpandingDataEncodingPatterns,leymann2019pattern}: \label{list:encoding_patterns}
 \begin{itemize}
-    \item Basis Encoding
+    \item Basis Encoding (See section \ref{section:basis_embedding})
     \item Angle Encoding or Tensor Product Encoding (See section \ref{section:angle_embedding}) \cite{leymannBitterTruthGatebased2020}
     \item Amplitude Encoding \& Repeated Amplitude Encoding
     \item Quantum Associative Memory (QUAM) Encoding
@@ -58,9 +58,11 @@ There is a trade-off between the following three major criteria\cite{Weigold2021
     \item \textit{The data must be represented in a suitable manner} for further calculations, e.g., arithmetic operations.
 \end{itemize}
 
+\section{Basis Embedding}\label{section:basis_embedding}
+\todo{add basis embedding (binary)}
+
 
 \section{Angle Embedding}\label{section:angle_embedding}
-
 
 Whilst angle embedding is not optimal as it requires $n$ qubits to represent $n$-dimensional data, it is efficient in terms of operations and directly useful for processing data in quantum neural networks\cite{Weigold2021_ExpandingDataEncodingPatterns,leymannBitterTruthGatebased2020}. Weigold et al.  state that only single-qubit rotations are needed for the state preparation routine which is highly efficient and can be done in parallel for each qubit. \break{}
 The experiments are limited to angle encoding in the quantum circuits where the value is directly encoded into the rotation angle of the qubit state. Parameterizable gates\cite{qiskit_rygate_nodate} are used for the encoding. A detailed explanation of the used $\mathrm{RY}(\theta)$ gate is available in chapter \ref{chapter:rotation} \break{}
@@ -79,7 +81,7 @@ Consider the example in figure \ref{fig:example_encoding_circuit_ry} where the f
     \label{fig:example_encoding_circuit_ry}
 \end{figure}
 
-The corresponding equation, as shown by Weigold et al.\cite{Weigold2021_ExpandingDataEncodingPatterns}, is shown in equation \ref{equation:angle_embedding_two_hadamard_example}:
+The corresponding equation \ref{equation:angle_embedding_two_hadamard_example}, as shown by Weigold et al.\cite{Weigold2021_ExpandingDataEncodingPatterns}:
 
 \begin{equation}
     \centering
@@ -98,7 +100,7 @@ The corresponding equation, as shown by Weigold et al.\cite{Weigold2021_Expandin
 This example can be written in Python with the \href{https://www.pennylane.ai}{Pennylane.ai} library:
 
 \begin{minted}{python}
-# pennylane.ai python library
+# pennylane.ai python library angle embedding example
 import pennylane as qml
 from pennylane import numpy as np
 
@@ -119,7 +121,7 @@ def circuit(data, probs=False):
       return  qml.probs(wires=range(2))
     return  qml.state()
 
-# run and print the circuit
+# print the probabilities
 print("State vector:")
 print(circuit(data))
 print("Probabilities:")
@@ -130,7 +132,45 @@ print(circuit(data, True))
 \begin{minted}{text}
 State vector:
 [0.33126825+0.j 0.74021789+0.j 0.23900489+0.j 0.53405569+0.j]
+Probabilities:
+[0.10973865 0.54792253 0.05712334 0.28521548]
+\end{minted}
 
+\newpage
+The same example written in Python with the \href{https://qiskit.org/documentation/}{qiskit.org} library:
+
+\begin{minted}{python}
+# qiskit.org python library angle embedding example
+from qiskit import QuantumCircuit
+from qiskit.quantum_info import Statevector
+import numpy as np
+
+# features
+x = 1.25
+y = 2.3
+data = np.array([[x, y]])
+
+# create circuit
+circuit = QuantumCircuit(2)
+for i in range(len(data)):
+  circuit.ry(data[i][0],0) # input feature x
+  circuit.ry(data[i][1],1) # input feature y
+
+# get the probabilities
+state = Statevector.from_instruction(circuit.reverse_bits())
+probs = state.probabilities()
+
+# print the probabilities
+print(state)
+print("Probabilities:")
+print(probs)
+\end{minted}
+
+\noindent The code then returns the probability vectors:
+\begin{minted}{text}
+Statevector([0.33126825+0.j, 0.74021789+0.j, 0.23900489+0.j,
+             0.53405569+0.j],
+            dims=(2, 2))
 Probabilities:
 [0.10973865 0.54792253 0.05712334 0.28521548]
 \end{minted}

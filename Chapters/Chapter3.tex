@@ -8,7 +8,7 @@
 \section{Quantum circuits}
 \label{chapter:quantum_circuits}
 
-Using the knowledge gathered in chapter \ref{chapter:computational_neuron} and \ref{chapter:quantum_embedding}, several quantum circuits are constructed for classification. \code{qiskit} offers the possibility of gradient based optimization of weights in a given circuit. Based on the paper by Schuld et al. \cite{schuld_evaluating_2019}, we can optimize any given quantum circuit with a \code{NeuralNetworkClassifier}\cite{qiskit_neural_nodate}. The code to turn a single circuit into a classifier is shown in figure \ref{fig:code_qnn}. Note that the optimization itself is done in a classical fashion - only the classifier is solved as a quantum circuit. All calculations and classifications were done with the \code{qiskit} '\code{aer\_simulator}'.
+Using the definitions from chapter \ref{chapter:computational_neuron} and \ref{chapter:quantum_embedding}, several quantum circuits are constructed for classification. \code{qiskit} offers a flexible approach for the gradient based optimization of weights in a given circuit. \code{qiskit} is chosen for this task as it allows fine control of all components that go not only into the circuit, but also into the optimization. Based on the paper by Schuld et al. \cite{schuld_evaluating_2019}, we can optimize any given quantum circuit with a \code{NeuralNetworkClassifier}\cite{qiskit_neural_nodate}. The code to turn a single circuit into a classifier is shown in figure \ref{fig:code_qnn}. Note that the optimization itself is done in a classical fashion - only the classification is done with a quantum circuit. All calculations and classifications were done with the '\code{aer\_simulator}' from \code{qiskit}. The \code{NeuralNetworkClassifier} in combination with \code{CircuitQNN} uses a measurment of all given qubits and a parity function \ref{fig:parity_function} to determine the label, where $n$ is the amount of different labels in the dataset.
 
 \begin{figure}[!ht]
     \centering
@@ -27,9 +27,23 @@ Using the knowledge gathered in chapter \ref{chapter:computational_neuron} and \
     \label{fig:code_qnn}
 \end{figure}
 
+\begin{figure}[!ht]
+    \centering
+    \begin{minted}{python}
+    def parity(x):
+        return '{:b}'.format(x).count('1') % n
+    \end{minted}
+    \caption{Parity function to assign label after classification}
+    \label{fig:parity_function}
+\end{figure}
+
+\clearpage
+
+Figure \ref{fig:schematic_view_classical_and_quantum_circuit} is an overview of the training process. The features of a given dataset are preprocessed and then parameterized onto the circuit. The weights are set from the optimizer, which also adapts them during training.
+
 \begin{figure}[!h]
     \centering
-    \scalebox{0.66}{
+    \scalebox{0.55}{
         \begin{tikzpicture}[
           roundnode/.style={circle, draw=black!60, fill=white!5, thick, minimum size=7mm},
           squarednode/.style={rectangle, draw=black!60, fill=white!5, thick, minimum size=10mm},
@@ -60,18 +74,7 @@ Using the knowledge gathered in chapter \ref{chapter:computational_neuron} and \
     \label{fig:schematic_view_classical_and_quantum_circuit}
 \end{figure}
 
-\code{inputs} and \code{weights} are the variable parameters in our circuit, where any feature $f_i$ is used in \code{inputs} and any weight $\omega_i$ in \code{weights}.
-The \code{NeuralNetworkClassifier} in combination with \code{CircuitQNN} uses a measurment of all given qubits. The amount of $1$ is then counted and used with modulo $n$ (for $n$ classes) to determine the class. Whilst there are other possibilities, this examination sticks to this classification method. The \code{parity} function used for this is defined in figure \ref{fig:parity_function}
 
-\begin{figure}[!ht]
-    \centering
-    \begin{minted}{python}
-    def parity(x):
-        return '{:b}'.format(x).count('1') % n
-    \end{minted}
-    \caption{Parity function used to determine the class of a given data sample}
-    \label{fig:parity_function}
-\end{figure}
 
 \begin{figure}[!ht]
     \centering
@@ -176,25 +179,76 @@ The \code{NeuralNetworkClassifier} in combination with \code{CircuitQNN} uses a 
     \label{fig:qc_ryryczry_2qbit}
 \end{figure}
 
+\clearpage
 
 \section{Datasets}
 \label{chapter:datasets}
 
-The shown circuits shown in chapter \ref{chapter:quantum_circuits} are used as shown or adapted for the given amount of features and classes of the testing dataset. The datasets were used in three different forms of normalization. The first one no normalization: the values contained inside the dataset are taken as raw values and given to the quantum circuit. The second choice of normalization is done on a range from $-1$ to $1$, and the third on a range from $-\pi$ to $\pi$. As seen in chapters \ref{chapter:quantum_embedding} and \ref{chapter:rotation}, $\pi$ corresponds to a $180°$ rotation, so should offer some additional expressability and the normalization to the range of $-1$ and $1$ does the same, although with a smaller degree of rotation. The data collected on each circuit was done trough an iteration of 10 learning steps, all starting from a completely empty weightset. Each measurment in the simulator of \code{qiskit} was done with $1024$ shots. The data split was $25\%$ testing data and $75\%$ training data. This was all done twice - once with random shuffle of the data between each training iteration, and once without. The seeds were all set for any randomized function, \emph{except} the measurment simulator from \code{qiskit}. This due to the fact that any measurment in real life cannot be predicted through a random seed. This is supposed to allow better evaluation and understanding of training a quantum classifier.
+The circuits shown in chapter \ref{chapter:quantum_circuits} are used as shown or adapted for the given amount of features and classes of the testing dataset. The datasets were used with three different forms of normalization. The first one is without any preprocessing, that is, the features are parameterized as is, the second one normalizes all features to the range $[-1,1]$ and the last one to  $[-\pi,\pi]$. As seen in chapters \ref{chapter:quantum_embedding} and \ref{chapter:rotation}, $\pi$ corresponds to a $180°$ rotation, so should offer some additional expressability and the normalization to $[-1,1]$ as well, albeit by a smaller degree. The data collected on each circuit was done trough 10 training iteration, where each was started with a completely empty set of weights. Each measurement in the simulator of \code{qiskit} was done with $1024$ shots and the data split was $25\%$ testing and $75\%$ training. Total training was done twice - once with random shuffle of the data between each training iteration, and once without. The seeds were all set for any randomized function, \emph{except} the measurment simulator from \code{qiskit}. This due to the fact that any measurement in real life cannot be predicted through a random seed. This is supposed to allow better evaluation and understanding of training a quantum classifier.
 
 \todo{Explicitly add count of data points and how many features etc.}
 
 \subsection{Iris}
 \label{chapter:iris}
 
-The IRIS \cite{fisher_use_1936} dataset is one of the mest well known datasets with plenty of avaliable solutions. This allows it to be a good example for general comparison to classical classification methods. All of the features were used in the circuit after passing through the normalization step.
+The IRIS \cite{fisher_use_1936} dataset is one of the mest well known datasets with plenty of avaliable solutions. This allows it to be a good example for general comparison to classical classification methods. All of the features were used in the circuit after passing through the normalization step. It contains $3$ different classes, each with $4$ discrete features, amounting to 150 entries.
 
 \subsection{Heart Failure Prediction}
 \label{chapter:heart_failure_prediction}
 
-This dataset \cite{ahmad_survival_2017} was selected due to several reason. It is biased towards the \emph{survivor} classification with roughly 68\% of the entries being of class 0, and 32\% for class 1. There also exist several high accuracy offerings when it comes to classifying the complete dataset. The solution used for comparison\cite{sakhiya_heart_nodate} achieves an accuracy of $93.33\%$. To get a direct comparison, the equal feature selection was used, even though the selection of \code{time} is usually seen as bad, due to that factor being unavaliable during real classification\footnote{In this dataset, \code{time} refers to the time during study of the patients and data collection, so a direct correlation between death and time exists, as a given time valuable can, most of the time, be attribute to death or no death. For comparisons sake, this error in feature selection was neglected, as we are only interested in achievable accuracy}
+This dataset \cite{ahmad_survival_2017} was selected due to several reason. It is biased towards the \emph{survivor} classification with roughly 68\% of the entries being of class 0, and 32\% for class 1 as well as having a total of 299 entries. There exist several high accuracy offerings when it comes to classifying the complete dataset that can be used for comparison. The one used for comparison\cite{sakhiya_heart_nodate} achieves an accuracy of $93.33\%$. To allow for a direct comparison, the same $3$ features out of $12$ are used\footnote{In this dataset, \code{time} refers to the time during study of the patients and data collection, so a direct correlation between death and time exists, as a given time valuable can, most of the time, be attribute to death or no death. For comparisons sake, this error in feature selection was neglected, as we are only interested in achievable accuracy}.
 
 \subsection{Artificial Problem}
 \label{chapter:artificial_problem}
 
-To examine the expressability of the given circuits, the artificial problem from Havlicek et al. \cite{havlicek_supervised_2019} offers a problem space that is inherently hard to solve throught classical methods. Havlicek et al. also purpose a circuit that is able to solve the given problem with perfect accuracy, which offers itself as a good comparison to the capabilities the created circuits offer.
+To examine the expressability of the given circuits, the artificial problem from Havlicek et al. \cite{havlicek_supervised_2019} offers a problem space that is inherently hard to solve throught classical methods. Havlicek et al. also purpose a circuit that is able to solve the given problem with perfect accuracy, which offers itself as a good comparison to the capabilities the created circuits offer. It consists of $2$ classes with $2$ features, amounting to a total of 250 entries. The problem space is dynamically generated and can be adapted to ones desired setup, as shown in figure \ref{fig:ad_hoc_code}. Visual representation of the problem space is shown in figure \ref{fig:problem_space_plot}.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{minted}{python}
+    adhoc_dimension = 2
+    train_features, train_labels, test_features, test_labels, adhoc_total = ad_hoc_data(
+        training_size=188,
+        test_size=67,
+        n=adhoc_dimension,
+        gap=0.3,
+        plot_data=False, one_hot=False, include_sample_total=True)
+    \end{minted}
+    \caption{Python code used to create an artificial problem space for classification}
+    \label{fig:ad_hoc_code}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \scalebox{0.75}{
+        \includesvg{Appendices/boxplots/artificial_problem/problem_space.svg}
+    }
+    \caption{Visualization of the classified problem space, where $x$ and $y$ axis are the features, and red/blue the corresponding class}
+    \label{fig:problem_space_plot}
+\end{figure}
+
+\subsection{Classification On Quantum Hardware}
+Circuit \ref{fig:qc_ryrycryry} is used in the trained state and evaluated $5$ times on a real quantum computer. Due to access to real hardware being behind a queue system, the workload was split across multiple real devices. These are \code{ibmq\_belem} and \code{ibmq\_lima}. \code{qiskit} is used for this as it offers easy access to the hardware as well as selection of least used system. Note that the trained weights are are static in the circuit and therefor don't need to be parameterized.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{minted}{python}
+    shots = 1024
+    IBMQ.load_account()
+    amount_of_runs = 5
+    runs = []
+    for i in range(amount_of_runs):
+        results = []
+        for features in x_test:
+            _, backend = use_least_busy_real_device()
+            qc = circuit.copy()
+            qc = qc.bind_parameters(features)
+            job_exp = execute(qc, backend, shots=shots)
+            job_monitor(job_exp)
+            results.append(job_exp.result().get_counts(qc))
+        runs.append(results)
+    \end{minted}
+    \caption{Python code used to run trained classification circuit on a real quantum computer}
+    \label{fig:code_real_hardware}
+\end{figure}
+
