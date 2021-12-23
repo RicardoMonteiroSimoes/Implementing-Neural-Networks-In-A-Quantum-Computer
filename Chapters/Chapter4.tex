@@ -4,12 +4,13 @@
 
 \label{chapter:results}
 
-The results in the chapters are of condensed form. Please referr to appendix \ref{appendix:boxplots} for more detailed figures. The following figures of this chapter use display the achieved accuracy on the y axis, and the number of the circuit on the x axis and are limited to only the achieved testing accuracy. For the randomized segments, 10 training runs had its own data shuffling, which was used for every circuit.
+The results in the chapters are in condensed form. Please refer to appendix \ref{appendix:boxplots} for more detailed figures. The following figures of this chapter use display the achieved accuracy on the $y$ axis, and the number of the circuit on the $x$ axis, and are limited to only the achieved testing accuracy. For the randomized segments, 10 training runs had its own data shuffling, which was used for every circuit. The IRIS dataset is in addition also classified on a basic MLP classifier.
 %----------------------------------------------------------------------------------------
-\def \newboxplotwidth {230pt}
+\def \newboxplotwidth {215pt}
 
 
-\subsection{Non Randomized IRIS}
+\clearpage
+\section{Non Randomized IRIS}
 \label{chapter:iris_non_randomized}
 
 \todo{Add axis description to all plots}
@@ -45,12 +46,12 @@ The results in the chapters are of condensed form. Please referr to appendix \re
         \includesvg[width = \newboxplotwidth]
         {Appendices/boxplots/iris/non_randomized_split/MLP_on_non_randomized,_pified_data.svg}
     \end{subfigure}
-    \caption{Comparison of test results from all trained circuits on the non randomized IRIS dataset}
+    \caption{Comparison of test results from all trained circuits on the non-randomized IRIS dataset}
     \label{fig:circuits_results_non_r_iris}
 \end{figure}
 \clearpage
 
-\subsection{Randomized IRIS}
+\section{Randomized IRIS}
 \label{chapter:iris_randomized}
 
 \begin{figure}[!h]
@@ -88,8 +89,18 @@ The results in the chapters are of condensed form. Please referr to appendix \re
     \label{fig:circuits_results_r_iris}
 \end{figure}
 
+\clearpage
+\subsection{Classification Of IRIS On Quantum Hardware}
+
+\begin{figure}[!h]
+    \centering
+    \includesvg[width = \newboxplotwidth]{Appendices/boxplots/real_hardware/Accuracy_of_trained_circuit_1_on_real_quantum_hardware.svg}
+    \caption{Caption}
+    \label{fig:boxplot_real_hardware}
+\end{figure}
+
 \clearpage 
-\subsection{Non Randomized Heart Failure Prediction}
+\section{Non Randomized Heart Failure Prediction}
 \label{chapter:heart_failure_prediction_non_randomized}
 
 \begin{figure}[!h]
@@ -108,12 +119,12 @@ The results in the chapters are of condensed form. Please referr to appendix \re
         \includesvg[width = \newboxplotwidth]
         {Appendices/boxplots/heart_failure/non_randomized_split/Comparison_of_all_circuits_with_non_randomized,_pified_data.svg}
     \end{subfigure}
-    \caption{Comparison of test results from all trained circuits on the non randomized Heart Failure dataset}
+    \caption{Comparison of test results from all trained circuits on the non-randomized Heart Failure dataset}
     \label{fig:circuits_results_non_r_hf}
 \end{figure}
 
 \clearpage 
-\subsection{Randomized Heart Failure Prediction}
+\section{Randomized Heart Failure Prediction}
 \label{chapter:heart_failure_prediction_randomized}
 
 \begin{figure}[!h]
@@ -132,12 +143,12 @@ The results in the chapters are of condensed form. Please referr to appendix \re
         \includesvg[width = \newboxplotwidth]
         {Appendices/boxplots/heart_failure/randomized_split/Comparison_of_all_circuits_with_randomized,_pified_data.svg}
     \end{subfigure}
-    \caption{Comparison of test results from all trained circuits on the non randomized Hearth Failure dataset}
+    \caption{Comparison of test results from all trained circuits on the non-randomized Hearth Failure dataset}
     \label{fig:circuits_results_r_hf}
 \end{figure}
 
 \clearpage 
-\subsection{Non-randomized Artificial Problem}
+\section{Non-randomized Artificial Problem}
 \label{chapter:artificial_problem_non_randomized}
 
 \begin{figure}[!h]
@@ -156,12 +167,12 @@ The results in the chapters are of condensed form. Please referr to appendix \re
         \includesvg[width = \newboxplotwidth]
         {Appendices/boxplots/artificial_problem/non_randomized_split/Comparison_of_all_circuits_with_non_randomized,_pified_data.svg}
     \end{subfigure}
-    \caption{Comparison of test results from all trained circuits on the non randomized Artificial Problem dataset}
+    \caption{Comparison of test results from all trained circuits on the non-randomized Artificial Problem dataset}
     \label{fig:circuits_results_non_r_ap}
 \end{figure}
 
 \clearpage 
-\subsection{Randomized Artificial Problem}
+\section{Randomized Artificial Problem}
 \label{chapter:artificial_problem_randomized}
 \begin{figure}[!h]
     \begin{subfigure}{.5\textwidth}
@@ -179,23 +190,24 @@ The results in the chapters are of condensed form. Please referr to appendix \re
         \includesvg[width = \newboxplotwidth]
         {Appendices/boxplots/artificial_problem/randomized_split/Comparison_of_all_circuits_with_randomized,_pified_data.svg}
     \end{subfigure}
-    \caption{Comparison of test results from all trained circuits on the non randomized Artificial Problem dataset}
+    \caption{Comparison of test results from all trained circuits on the non-randomized Artificial Problem dataset}
     \label{fig:circuits_results_r_ap}
 \end{figure}
 
 \clearpage
-
 \section{Discussion}
-The results achieved when training was done with static training/test data shuffle shows that due to the nature of probabilistic measurements, one can not \emph{naturally} expect to achieve the same accuracy every time training is done. As stated in chapter \ref{chapter:datasets}, we did not fixate the seed of the random measurements the simulator does on a quantum circuit, as this cannot be done on real hardware.\par 
-The collected data shows that even an usable circuit that \emph{can} achieve perfect testing accuracy, as seen in figure \ref{fig:circuits_results_r_ap}, it will often end up in an acceptable range of $[0.7, 0.8]$ accuracy. When compared to the circuit used by Havlicek et al.\cite{havlicek_supervised_2019}, which was adapted to be trained by the same methods, it achieved near perfect \emph{or} perfect accuracy from the beginning of the training. This leads to the assumption, that whilst some circuits might be easier to adapt to the problem space, and therefor, easier to learn, one cannot guarantee that a given circuit will always lead to the same results. This is also shown when comparing our Heart Failure results to the referred solution, whilst we had cases where we beat the solution, most achieved scores were below the $0.933$ of the comparison solution.\par 
-It is important to remind that due to the unavailability of real hardware to perform long training sessions on, we used solely a simulator and reduced the amount of measurement shots (which get summed up to display the probabilities) to 1024, which can be seen as not enough. When comparing to the solution of Havlicek et al., we can see that better adapted circuits \emph{will} achieve better resulting accuracy, faster, than general purpose circuits. It is to be seen if such a circuit can be dynamically built for every problem space, or if carefully handpicked designs are the way to go.\par
-All of the shown figures in chapter \ref{chapter:results} display an overall increase in achieved accuracy from the performed normalization which scaled down the feature space to the range $[-1,1]$. Further observations show that there is a net loss of achieved accuracy when using a normalization with the range $[-\pi,\pi]$ on IRIS. An explanation is that any rotations that go beyond the point of $\ket{0}$ and $\ket{1}$ start to \emph{decrease} the probability of the given state again, even though initially, it was increasing it. When looking at the range of achieved accuracy for IRIS, the net gain for a normalization on $[-1,1]$ is in the range of $[0.020,0.028]$ and for the normalization on range $[-\pi,\pi]$ it was net loss of $[-0.059,-0.054]$. The same comparison on the heart failure data leads to a net gain of $[0.087, 0.229]$ for $[-1,1]$ and a net gain of $[0.070,0.131]$ for $[-\pi,\pi]$. \par
-When observing the raw features of the IRIS dataset, we can observe that normalizing to $[-\pi,\pi]$ increases the total range of single features, which makes the feature space more \emph{sparse}, whilst in the Heart Failure dataset it decreases the range of single features, therefor making them more dense. This explains how with IRIS a net loss and with Heart Failure a net gain is achieved. \par
-The data also suggests, that given an enough complex quantum circuit, it is possible for it to achieve excellent classification results for any given dataset. This can be seen in figures \ref{fig:circuits_results_non_r_iris} up to \ref{fig:circuits_results_r_ap}, where circuit $4$ managed to achieve good results across all datasets. This is supported by the findings of Sim et al.\cite{sim_expressibility_2019}, which show that combinations of gates can make use of a wider range of possible states, therefor making them more capable of trespassing the problem space.
+The results when training is done with static training/test data shuffle show that due to the nature of probabilistic measurements, one cannot \emph{naturally} expect to achieve the same accuracy every time training is done. As stated in chapter \ref{chapter:datasets}, the seed for the random measurements the simulator does on a quantum circuit is not fixated, as this cannot be done on real hardware.\par 
+The collected data shows that even a usable circuit that \emph{can} achieve perfect testing accuracy, as seen in figure \ref{fig:circuits_results_r_ap}, will often end up below that. When compared to the circuit used by Havlicek et al.\cite{havlicek_supervised_2019}, which was adapted to be trained with the same methods, it achieved near perfect \emph{or} perfect accuracy from the beginning of the training (on the artificial problem). This leads to the assumption, that some circuits might be easier to adapt to the problem space, and therefore, easier to learn, but cannot guarantee that a given circuit will always return the same results. This is also observable in the Heart Failure results when compared to the referred solution. Whilst cases exist, where it beats the comparison, most achieved scores are below the $0.933$ of said solution.\par 
+Due to the limited availability of real hardware to perform long training sessions on, the training is done on the simulator with reduced amount of measurement shots (which are summed up to show the probabilities) of 1024. It can be argued that this is not enough to reach converging probabilities. When comparing to Havlicek et al. solution, it is clear that a circuit, which is more refined to the problem at hand, \emph{will} achieve better resulting accuracy, faster and with less variance, than general purpose circuits. It is not yet clear if such a circuit can be dynamically built for every problem space, or if they have to be carefully designed.\par
+All figures in chapter \ref{chapter:results} display an overall increase in achieved accuracy from the performed normalization, which scaled down the feature space to the range $[-1,1]$. At the same time, it shows that there is a net loss of achieved accuracy when using a normalization with the range $[-\pi,\pi]$ on IRIS. An explanation is that any rotations that go beyond the point of $\ket{0}$ and $\ket{1}$ start to \emph{decrease} the probability of the given state again, even though initially, it was increasing it, as elaborated on in the chapter \todo{add reference to said chapter by huberpa}. When looking at the range of achieved accuracy for IRIS, the net gain for a normalization on $[-1,1]$ is in the range of $[0.020,0.028]$ and for the normalization on range $[-\pi,\pi]$ it was a net loss of $[-0.059,-0.054]$, when compared to the raw data scores. The same comparison on the heart failure data leads to a net gain of $[0.087, 0.229]$ for $[-1,1]$ and a net gain of $[0.070,0.131]$ for $[-\pi,\pi]$. \par
+Comparing the raw features of the IRIS dataset to the ones of the Heart Failure dataset, the \emph{initial} range of feature values is larger for the Heart Failure dataset. Therefore, normalizing IRIS to $[-\pi,\pi]$ increases the total range of single features, which makes the feature space more \emph{sparse}, whilst in the Heart Failure dataset it decreases the range of single features, making it more dense. This explains why the classification of IRIS has a net loss and classifying Heart Failure a net gain when using a normalization of $[-\pi, \pi]$. \par
+Collected data suggests that given an enough complex quantum circuit, it is possible to achieve excellent classification results for any given dataset. This can be seen in figures \ref{fig:circuits_results_non_r_iris} up to \ref{fig:circuits_results_r_ap}, where circuit $4$ managed to achieve good results across all datasets. This is supported by the findings of Sim et al.\cite{sim_expressibility_2019}, which show that combinations of gates can make use of a wider range of possible states, therefore making them more capable of trespassing the problem space.
+Observing the results of the classification on real quantum hardware in figure \ref{fig:boxplot_real_hardware}, the measured accuracy is $~0.55$ \emph{less} than the one achieved in the simulator. There are several potential reasons for this. Initially, some variance is introduced from the setup through the limited number of shots\footnote{Shots were limited to 1024 for this experiment}. In addition, execution on real quantum hardware is always prone to noise which can falsify states, and therefore, lead to wrong measurements. This is an active problem that is still being tackled\cite{georgopoulos_modelling_2021,shaib_efficient_2021}, so future improvements in reliability of measurements are sure to increase classification scores.\par
+A comparison of time complexity between our circuits and classical neural networks is difficult to create. Not only the lack of reliable references for this, but also flexibility of not only neural networks, but other machine learning algorithms too. These are commonly adapted to their classification problems, which makes a generic assumption of $O(x)$ unreliable. In addition, hardware with features that speed up neural networks\cite{baischer_learning_2021} add to the unreliability of such a comparison.
+
 \clearpage
 \section{Conclusion}
-Taking together all results from this research shows that whilst quantum circuits are highly dynamic and adaptable to multiple problem spaces, the probabilistic measurements and that versatility can backfire whilst creating and training circuits with the goal of classifying datasets. There appears to be a need for multiple evaluations under the same conditions before one can truly assess the capabilities of a given quantum classifier to solve the problem space. When creating a classification circuit, it is important to narrow down the expressiveness of the circuit so that training and accuracy is less sparse and resulting scores more reproducible. Further experiments on quantum classification algorithms should aim at creating a base state in the circuit, which could help limiting the possible problem space, there for enhancing the achievable accuracy score as well as reducing total training duration.
-
+The results show that it is indeed possible to create a quantum circuit that has the ability to classify a wide range of datasets. They also show that even though they offer high adaptability to multiple problem spaces, the probabilistic measurements and that versatility can backfire whilst training circuits with the goal of classifying datasets. The implication is that there is a requirement for multiple evaluations under the same conditions before a circuit's capabilities can be assessed. Another takeaway from the conducted research is that limiting the expressiveness of the circuit with rotation gates that have fixed values attributed to them \emph{might} lead to less variance, as the optimizer cannot meddle with those values.
 
 
 

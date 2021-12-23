@@ -5,8 +5,8 @@
 \label{chapter:quantum_classifiers_decision_boundaries}
 \todo{explain ansatz and why and also quantum classifier in general}
 %----------------------------------------------------------------------------------------
-To analyze the expressiveness of quantum circuits contour plots are used to show the decision boundaries of trained quantum classifiers.\\
-The following experiments\todo{use figures and reference them here, so that it is 100\% clear what is meant} show three different artificial problems consisting of two moons (make\_moons), circle shaped (make\_circles) and linearly separable data (make\_classfication) from top to bottom. All data sets have only two classes (binary) and 100 data points. The data given to the quantum classifiers has been scaled to $\mathrm{[-1,1]}$. The classifier which receives the measured output of the quantum circuit is defined as follows:
+To analyse the expressiveness and the impact of gate changes for quantum classifier circuits in comparison to a classical Multi-layer Perceptron classifier (sklearn neural network \href{https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html}{\code{MLPClassifier}}), contour plots are used to visualize the decision boundaries. A quantum classifier is defined as follows by Lloyd et al.\cite{Quantum_embeddings_for_machine_learning_2020}: \textit{Let $\ket{x}$ be an embedding of a data input $x \in X$. A quantum classifier is a classifier where $f(x)$ is an expectation $\bra{x}M\ket{x}$ of a quantum measurement of the observable $M$.}
+The classifier which receives the measured output of the quantum circuit is defined as follows\cite{Quantum_embeddings_for_machine_learning_2020}:
 \hfill \break
 
 $f : X \rightarrow\mathbb{R}$. The quantum classifier assigns a binary label to $x$ according to the threshold rule:
@@ -23,15 +23,21 @@ $f : X \rightarrow\mathbb{R}$. The quantum classifier assigns a binary label to 
     \label{equation:classifier_definition}
 \end{equation}
 
-with $\tau\in\mathbb{R}$ and $\tau$ is equal to zero.\todo{$\tau$ equal to zero?}\\
-\hfill \break 
-Data was splitted with $75\%$ being used for training and $25\%$ for testing. The \href{https://www.pennylane.ai}{Pennylane.ai} framework has been used with the \href{https://pennylane.readthedocs.io/en/stable/code/api/pennylane.devices.default_qubit.html#module-pennylane.devices.default_qubit}{\code{default.qubit}} simulator. Optimization is done with the \href{https://pennylane.readthedocs.io/en/stable/code/api/pennylane.NesterovMomentumOptimizer.html}{\code{NesterovMomentumOptimizer}} optimizer.
+with $\tau\in\mathbb{R}$ and if no other information is provided, $\tau$ is assumed to be zero.\\
+\hfill \break
+Lloyd et al.\cite{Quantum_embeddings_for_machine_learning_2020} further states that quantum binary classification is defined as: \textit{For a given embedding $\Phi$, quantum binary classification is the problem of assigning $\ket{x}$ to one
+of two "data-ensembles" of quantum feature states, $\varrho = \frac{1}{M_a} \sum_{a} \ket{a} \bra{a} $ or $ \sigma = \frac{1}{M_b} \sum_{b} \ket{b} \bra{b} $, where $\varrho$ and $\sigma$ are mixed states that describe the process of selecting an embedded data point $\ket{a}$, $\ket{b}$ with uniform probability from a training set.}
+\hfill \break
+
+The following experiments\todo{Add references to figures, subsection etc.} show three different artificial problems consisting of linearly separable ($make\_classfication$), circle shaped ($make\_circles$) and moon shaped data ($make\_moons$). All data sets have only two classes (binary) and $100$ data points. The data given to the quantum classifiers has been scaled to $\mathrm{[-1,1]}$. 
+
+Data was divided into $75\%$ being used for training and $25\%$ for testing. The \href{https://www.pennylane.ai}{Pennylane.ai} framework has been used with the \href{https://pennylane.readthedocs.io/en/stable/code/api/pennylane.devices.default_qubit.html#module-pennylane.devices.default_qubit}{\code{default.qubit}} simulator. Optimization is done with the \href{https://pennylane.readthedocs.io/en/stable/code/api/pennylane.NesterovMomentumOptimizer.html}{\code{NesterovMomentumOptimizer}} optimizer. The schematic setup for the quantum circuit and classical parts is the sane as seen in figure \ref{fig:schematic_view_classical_and_quantum_circuit}. 
 
 \clearpage
 \subsection{Single Qubit Circuits}
 \label{subsection:single_qubit_circuits}
 
-In this subsection two single qubit quantum classifiers with feature embedding between weights and a total count of six weights a have been trained. For comparison there is also a Multi-layer Perceptron classifier (sklearn neureal network \href{https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html}{\code{MLPClassifier}}) in the plots with the same iteration count as the quantum classifiers. Figure \ref{fig:SingleQubitClassifiers_50Iterations} has a iteration count of 50, figure \ref{fig:SingleQubitClassifiers_200Iterations} shows 200 iterations and the last figure \ref{fig:SingleQubitClassifiers_400Iterations} shows the classifiers after 400 iterations. The quantum classifiers score shows the latest iteration of the validation set accuracy while the score for the \code{MLPClassifier} is the mean accuracy.\\
+In this subsection, two single qubit quantum classifiers with feature embedding between weights and a total count of six weights are trained. For comparison, there is also a Multi-layer Perceptron classifier in the plots with the same iteration count as the quantum classifiers. Figure \ref{fig:SingleQubitClassifiers_50Iterations} has a iteration count of 50, figure \ref{fig:SingleQubitClassifiers_200Iterations} shows 200 iterations and the last figure \ref{fig:SingleQubitClassifiers_400Iterations} shows the classifiers after 400 iterations. The quantum classifiers score shows the latest iteration of the validation set accuracy, while the score for the \code{MLPClassifier} is the mean accuracy.\\
 \\
 
 \begin{figure}[h!]
@@ -64,43 +70,42 @@ In this subsection two single qubit quantum classifiers with feature embedding b
 \end{figure}
 
 % Contour plots
+
 \begin{figure}[h!]
     \centering
-    
+    \caption{Decision boundary and score comparison between Multi-layer Perceptron classifier, Quantum Circuit classifier 1 and Quantum Circuit classifier 2.\\\textit{Row 1}: Linearly separable data / \textit{Row 2}: Circle shaped data / \textit{Row 3}: Moon shaped data}
     \begin{subfigure}{1.0\textwidth}
         \centering
         \scalebox{0.27}{
-            \includegraphics{Appendices/chapter_5/SingleQubitClassifiers_50Iterations.png}
+            \includegraphics{Appendices/chapter_5/decision_boundary_1qubit_50-iter_01.png}
         }
-        \caption{Decision boundary and score comparison between Multi-layer Perceptron classifier, Quantum Circuit classifier 1 and Quantum Circuit classifier 2, limited to \textbf{50 iterations} for all classifiers using \textbf{single qubit quantum circuits}.}
+        \caption{\textbf{50 iterations} for all classifiers using \textbf{single qubit quantum circuits}.}
         \label{fig:SingleQubitClassifiers_50Iterations}
     \end{subfigure}
-    \\[2ex]
+    \\[1ex]
     \begin{subfigure}{1.0\textwidth}
         \centering
         \scalebox{0.27}{
-            \includegraphics{Appendices/chapter_5/SingleQubitClassifiers_200Iterations.png}
+            \includegraphics{Appendices/chapter_5/decision_boundary_1qubit_200-iter_01.png}
         }
-        \caption{Decision boundary and score comparison between Multi-layer Perceptron classifier, Quantum Circuit classifier 1 and Quantum Circuit classifier 2, limited to \textbf{200 iterations} for all classifiers using \textbf{single qubit quantum circuits}.}
+        \caption{\textbf{200 iterations} for all classifiers using \textbf{single qubit quantum circuits}.}
         \label{fig:SingleQubitClassifiers_200Iterations}
     \end{subfigure}
-    \\[2ex]
+    \\[1ex]
     \begin{subfigure}{1.0\textwidth}
         \centering
         \scalebox{0.27}{
-            \includegraphics{Appendices/chapter_5/SingleQubitClassifiers_400Iterations.png}
+            \includegraphics{Appendices/chapter_5/decision_boundary_1qubit_400-iter_01.png}
         }
-        \caption{Decision boundary and score comparison between Multi-layer Perceptron classifier, Quantum Circuit classifier 1 and Quantum Circuit classifier 2, limited to \textbf{400 iterations} for all classifiers using \textbf{single qubit quantum circuits}.}
+        \caption{\textbf{400 iterations} for all classifiers using \textbf{single qubit quantum circuits}.}
         \label{fig:SingleQubitClassifiers_400Iterations}
     \end{subfigure}
-    
 \end{figure}
 
 \clearpage
 \subsection{Two qubit circuits}
 \label{subsection:two_qubit_circuits}
-
-In this subsection three two qubit quantum classifiers with angle embedding and a total count of six weights a have been trained. For comparison there is also a Multi-layer Perceptron classifier (sklearn neureal network \href{https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html}{MLPClassifier}) in the plots with the same iteration count as the quantum classifiers. Figure \ref{fig:2QubitClassifiers_50Iterations} has a iteration count of 50, figure \ref{fig:2QubitClassifiers_200Iterations} shows 200 iterations and the last figure \ref{fig:2QubitClassifiers_400Iterations} shows the classifiers after 400 iterations. The quantum classifiers score shows the latest iteration of the validation set accuracy while the score for the \code{MLPClassifier} is the mean accuracy.\\
+In this subsection, three two qubit quantum classifiers with angle embedding and a total count of six weights are trained. For comparison, there is also a Multi-layer Perceptron classifier (sklearn neural network \href{https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html}{MLPClassifier}) in the plots with the same iteration count as the quantum classifiers. Figure \ref{fig:2QubitClassifiers_50Iterations} has an iteration count of 50, figure \ref{fig:2QubitClassifiers_200Iterations} shows 200 iterations and the last figure \ref{fig:2QubitClassifiers_400Iterations} shows the classifiers after 400 iterations. The quantum classifiers score shows the latest iteration of the validation set accuracy, while the score for the \code{MLPClassifier} is the mean accuracy.\\
 \\
 
 \begin{figure}[!h]
@@ -149,31 +154,31 @@ In this subsection three two qubit quantum classifiers with angle embedding and 
 % Contour plots
 \begin{figure}[!h]
     \centering
-
+    \caption{Decision boundary and score comparison between Multi-layer Perceptron classifier, Quantum Circuit classifier 1 and Quantum Circuit classifier 2.\\\textit{Row 1}: Linearly separable data / \textit{Row 2}: Circle shaped data / \textit{Row 3}: Moon shaped data}
     \begin{subfigure}{1.0\textwidth}
         \centering
         \scalebox{0.27}{
-            \includegraphics{Appendices/chapter_5/2QubitClassifiers_50Iterations.png}
+            \includegraphics{Appendices/chapter_5/decision_boundary_2qubits_50-iter_01.png}
         }
-        \caption{Decision boundary and score comparison between Multi-layer Perceptron classifier, Quantum Circuit classifier 1 and Quantum Circuit classifier 2, limited to \textbf{50 iterations} for all classifiers using \textbf{two qubit quantum circuits}.}
+        \caption{\textbf{50 iterations} for all classifiers using \textbf{two qubit quantum circuits}.}
         \label{fig:2QubitClassifiers_50Iterations}
     \end{subfigure}
-    \\[2ex]
+    \\[1ex]
     \begin{subfigure}{1.0\textwidth}
         \centering
         \scalebox{0.27}{
-            \includegraphics{Appendices/chapter_5/2QubitClassifiers_200Iterations.png}
+            \includegraphics{Appendices/chapter_5/decision_boundary_2qubits_200-iter_01.png}
         }
-        \caption{Decision boundary and score comparison between Multi-layer Perceptron classifier, Quantum Circuit classifier 1 and Quantum Circuit classifier 2, limited to \textbf{200 iterations} for all classifiers using \textbf{two qubit quantum circuits}.}
+        \caption{\textbf{200 iterations} for all classifiers using \textbf{two qubit quantum circuits}.}
         \label{fig:2QubitClassifiers_200Iterations}
     \end{subfigure}
-    \\[2ex]
+    \\[1ex]
     \begin{subfigure}{1.0\textwidth}
         \centering
         \scalebox{0.27}{
-            \includegraphics{Appendices/chapter_5/2QubitClassifiers_400Iterations.png}
+            \includegraphics{Appendices/chapter_5/decision_boundary_2qubits_400-iter_01.png}
         }
-        \caption{Decision boundary and score comparison between Multi-layer Perceptron classifier, Quantum Circuit classifier 1, Quantum Circuit classifier 2 and Quantum Circuit classifier 3, limited to \textbf{400 iterations} for all classifiers using \textbf{two qubit quantum circuits}.}
+        \caption{\textbf{400 iterations} for all classifiers using \textbf{two qubit quantum circuits}.}
         \label{fig:2QubitClassifiers_400Iterations}
     \end{subfigure}
 \end{figure}
@@ -182,11 +187,11 @@ In this subsection three two qubit quantum classifiers with angle embedding and 
 \section{Discussion}
 
 \subsection{Single qubit classifiers}
-Examining the single qubit classifier plots and comparing the quantum classifiers decision boundaries, it becomes obvious that the replacing of the $\mathrm{RY}$ gate in \textit{Quantum Circuit classifier 1} (\ref{fig:single_qubit_circuit_1}) with an $\mathrm{RX}$ gate in \textit{Quantum Circuit classifier 2} (\ref{fig:single_qubit_circuit_2}) for the feature $x_1$ enhanced the expressiveness of the \textit{Quantum Circuit classifier 2} in a very beneficial way, resulting in a much higher score over nearly all iteration counts.
+Examining the single qubit classifier plots and comparing the quantum classifiers decision boundaries, it becomes obvious that the replacing of the $\mathrm{RY}$ gate in \textit{Quantum Circuit classifier 1} (\ref{fig:single_qubit_circuit_1}) with a $\mathrm{RX}$ gate in \textit{Quantum Circuit classifier 2} (\ref{fig:single_qubit_circuit_2}) for the feature $x_1$ enhanced the expressiveness of the \textit{Quantum Circuit classifier 2} in a very beneficial way, resulting in a much higher score over nearly all iteration counts.
 
-Another interesting observation is that the \textit{Quantum Circuit classifier 1} consisting only of $\mathrm{RY}$ and $\mathrm{RZ}$ gates is able to adapt the weights to more and more resemble the data, mostly increasing the score with higher iterations but achieving this much slower than \textit{Quantum Circuit classifier 2}.
+Another interesting observation is that the \textit{Quantum Circuit classifier 1} consisting only of $\mathrm{RY}$ and $\mathrm{RZ}$ gates can adapt the weights to more and more resemble the data, mostly increasing the score with higher iterations, but achieving this much slower than \textit{Quantum Circuit classifier 2}.
 
-Comparing the linearly separable data (second and third row of figure \ref{fig:SingleQubitClassifiers_50Iterations}) between the \textit{Multi-layer Perceptron classifier} and \textit{Quantum Circuit classifier 2} with only 50 iterations, the \textit{Quantum Circuit classifier 2} outperforms the \textit{Multi-layer Perceptron classifier}, but the \textit{Multi-layer Perceptron classifier} is able to keep up again and over perform with more iterations as seen in figures \ref{fig:SingleQubitClassifiers_200Iterations} and \ref{fig:SingleQubitClassifiers_400Iterations}, at least for the linearly separable data.
+Comparing the linearly separable data (second and third row of figure \ref{fig:SingleQubitClassifiers_50Iterations}) between the \textit{Multi-layer Perceptron classifier} and \textit{Quantum Circuit classifier 2} with only 50 iterations, the \textit{Quantum Circuit classifier 2} outperforms the \textit{Multi-layer Perceptron classifier}, but the \textit{Multi-layer Perceptron classifier} can keep up again and over perform with more iterations as seen in figures \ref{fig:SingleQubitClassifiers_200Iterations} and \ref{fig:SingleQubitClassifiers_400Iterations}, at least for the linearly separable data.
 
 \subsection{Two qubit classifiers}
 

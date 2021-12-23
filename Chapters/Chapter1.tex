@@ -18,7 +18,7 @@
 %----------------------------------------------------------------------------------------
 
 \section{Quantum Data Encoding}\label{section:quantum_data_encoding}
-Quantum data encoding or quantum data embedding\footnote{The terms \textit{encoding} and \textit{embedding} can be used interchangeably in this context.} describes the process of loading classical data in a quantum circuit by encoding it into the state of the qubits. In fact the classical data is encoded in a Hilbert space using a quantum feature map. 
+Quantum data encoding or quantum data embedding\footnote{The terms \textit{encoding} and \textit{embedding} can be used interchangeably in this context.} describes the process of loading classical data in a quantum circuit by encoding it into the state of the qubits. In fact, the classical data is encoded in a Hilbert space using a quantum feature map. Lloyd et al.\cite{Quantum_embeddings_for_machine_learning_2020} defines quantum embedding as a quantum state $\ket{x}$ that represents a data input $x \in X$. It is facilitated by a quantum feature map $\phi : x \rightarrow \ket{x}$. For example, the quantum feature map can be executed by a quantum circuit $\Phi(x)$ whose gate parameters depend on $x$.
 
 There are multiple ways of encoding classical data onto quantum states (see list \ref{list:encoding_patterns}) using a quantum feature map which directly affects the computational power of the quantum circuit, emphasizing that the encoding is a crucial part in designing quantum algorithms.\cite{Quantum_machine_learning_in_feature_Hilbert_spaces_2019,Supervised_learning_with_quantum-enhanced_feature_spaces_2019,Quantum_embeddings_for_machine_learning_2020,PennyLane_QuantumEmbedding,PennyLane_QuantumFeatureMap,schuld2021supervised,leymann2019pattern}\par
 \par
@@ -53,18 +53,18 @@ The section in a quantum circuit where the classical data encoding is initialize
 
 There is a trade-off between the following three major criteria\cite{Weigold2021_ExpandingDataEncodingPatterns}:
 \begin{itemize}
-    \item \textit{The amount of qubits needed for the encoding should be minimal}, because current devices are of intermediate size and thus only contain a limited amount of qubits
+    \item \textit{The amount of qubits needed for the encoding should be minimal} because current devices are of intermediate size and thus only contain a limited amount of qubits
     \item \textit{The number of parallel operations needed to realize the encoding should be minimal to minimize the width of the quantum circuit} - ideally, the loading routine is of constant or logarithmic complexity
     \item \textit{The data must be represented in a suitable manner} for further calculations, e.g., arithmetic operations.
 \end{itemize}
 
 \section{Basis Embedding}\label{section:basis_embedding}
-\todo{add basis embedding (binary)}
-The main idea of basis embedding is to encode an real number, approximated by a binary format, into the computational basis $\{\ket{0…00}, \ket{0…01}, …, \ket{1…11}\}$ of the quantum state\todo{Is it already defined what a quantum state or computational basis is? if not, add definition to appendix?}. For example, the number "$5$" (dezimal) is represented as $101$ (binary format) which is then encoded by $\ket{101}$\cite{Weigold2021_EncodingPatternsForQuantumAlgorithms,schuld2021supervised}. The $\mathrm{X}$ gate (see section \ref{} \todo{add ref to X gate, or basic operations}) is used to set a qubit with initial ground state $\ket{0}$ to $\ket{1}$ as shown in figure \ref{fig:basis_embedding_example}.
+
+The main idea of basis embedding is to encode an real number, approximated by a binary format, into the computational basis $\{\ket{0…00}, \ket{0…01}, …, \ket{1…11}\}$ of the quantum state\todo{Is it already defined what a quantum state or computational basis is? if not, add definition to appendix?}. For example, the number "$5$" (decimal) is represented as $101$ (binary format) which is then encoded by $\ket{101}$\cite{Weigold2021_EncodingPatternsForQuantumAlgorithms,schuld2021supervised}. The $\mathrm{X}$ gate (see section \ref{} \todo{add ref to X gate, or basic operations}) is used to set a qubit with initial ground state $\ket{0}$ to $\ket{1}$ as shown in figure \ref{fig:basis_embedding_example}.
 
 \begin{figure}[!h]
     \centering
-    \scalebox{0.75}{
+    \scalebox{0.9}{
         \begin{tikzpicture}[
           squarednode/.style={rectangle, draw=white!60, fill=white!5, thick, minimum size=15mm}
         ]
@@ -92,8 +92,8 @@ The main idea of basis embedding is to encode an real number, approximated by a 
 
 \section{Angle Embedding}\label{section:angle_embedding}
 
-Whilst angle embedding is not optimal as it requires $n$ qubits to represent $n$-dimensional data, it is efficient in terms of operations and directly useful for processing data in quantum neural networks\cite{Weigold2021_ExpandingDataEncodingPatterns,leymannBitterTruthGatebased2020}. Weigold et al. state that only single-qubit rotations are needed for the state preparation routine which is highly efficient and can be done in parallel for each qubit. \break{}
-The experiments are limited to angle encoding in the quantum circuits where the value is directly encoded into the rotation angle of the qubit state. Parameterizable gates\cite{qiskit_rygate_nodate} are used for the encoding. A detailed explanation of the used $\mathrm{RY}(\theta)$ gate is available in chapter \ref{chapter:rotation} \break{}
+Whilst angle embedding is not optimal as it requires $n$ qubits to represent $n$-dimensional data, it is efficient regarding operations and directly useful for processing data in quantum neural networks\cite{Weigold2021_ExpandingDataEncodingPatterns,leymannBitterTruthGatebased2020}. Weigold et al. state that only single-qubit rotations are needed for the state preparation routine, which is highly efficient and can be done in parallel for each qubit. \break{}
+The experiments are limited to angle encoding in the quantum circuits where the value is directly encoded into the rotation angle of the qubit state. Parametrizable gates\cite{qiskit_rygate_nodate} are used for the encoding. A detailed explanation of the used $\mathrm{RY}(\theta)$ gate is available in chapter \ref{chapter:rotation} \break{}
  
 Consider the example in figure \ref{fig:example_encoding_circuit_ry} where the features $x, y$ are angle encoded onto the qubits $q_0, q_1$ using the $\mathrm{RY}\theta$ rotation gate, where $\theta$ is replaced with the corresponding feature. 
 
@@ -203,14 +203,41 @@ Probabilities:
 [0.10973865 0.54792253 0.05712334 0.28521548]
 \end{minted}
 
-\todo{explain resulting probabilities}-*-
+Using the statement in chapter \ref{chapter:basic_opterations} $|\alpha|^2 + |\beta|^2 = 1$, the statevector gives the probabilities with:
+
+\begin{equation}
+    \centering
+    \begin{split}
+        |0.33126825|^2 + |0.74021789|^2 + |0.23900489|^2 + |0.53405569|^2 = \\
+        0.10973\dots +0.54792\dots +0.05712\dots +0.28521\dots = 1 
+    \end{split}
+    \label{equation:angle_embedding_script_result_statevector}
+\end{equation}
+
+The probability vector results are illustrated in the following table \ref{table:angle_embedding_script_result_probabilities}:
+
+\begin{table}[!h]
+    \centering
+    \begin{tabular}{|c|l|}
+        \hline
+        qubit state & probability    \\ \hline
+        $00$        & $0.10973865$   \\ \hline
+        $01$        & $0.54792253$   \\ \hline
+        $10$        & $0.05712334$   \\ \hline
+        $11$        & $0.28521548$   \\ \hline
+        \end{tabular}
+    \caption{Probability vector results}
+    \label{table:angle_embedding_script_result_probabilities}
+\end{table}
+
+Table \ref{table:angle_embedding_script_result_probabilities} can be interpreted that there is a probability of $0.10973865$ for measuring "$0$" for qubit 0 ($q_0$) and "$0$" for qubit 1 ($q_1$), a probability of $0.54792253$ for measuring "$0$" for $q_0$ and "$1$" for $q_1$, a probability of $0.05712334$ for measuring "$1$" for $q_0$ and "$0$" for $q_1$ and finally a probability of $0.28521548$ for measuring "$1$" for $q_0$ and "$1$" for $q_1$. The most likely outcome is "$01$" as a final state with a probability greater than $\textasciitilde{}0.54$.
 
 \section{Data Preprocessing}
 \todo{explain the problems first, then the solution and why}
 
-As in classical machine learning, creating a usable classifiers requires the preprocessing of the avaliable data. This can be achieved in a plethora of different ways, for example, mean reduction, feature scaling, normalization and padding. Depending on the input data and the chosen quantum data encoding, preprocessing is a crucial or even mandatory step\cite{PoincarDataPreprocessinForQuantumMachineLearning_2021,VariationalClassifierPennyLane,SHRIVASTAVA20201849}. 
+As in classical machine learning, creating usable classifiers requires the preprocessing of the available data. This can be achieved in a plethora of different ways, for example, mean reduction, feature scaling, normalization and padding. Depending on the input data and the chosen quantum data encoding, preprocessing is a crucial or even mandatory step\cite{PoincarDataPreprocessinForQuantumMachineLearning_2021,VariationalClassifierPennyLane,SHRIVASTAVA20201849}. 
 
-One such an example is amplitude encoding where the input feature vector is encoded into the amplitudes of the quantum state. Weigold et al. \cite{Weigold2021_EncodingPatternsForQuantumAlgorithms} states that the squared moduli of the amplitudes of a quantum state must sum up to 1, therefore the input feature vector needs to be normalized to length 1. To associate each amplitude with a component of the input feature vector, the dimension of the feature vector must be equal to a power of two because the vector space of an $n$ qubit register has dimension $2^n$. If this is not the case, the input feature vector can be padded with additional zeros to increase the dimension of it. To summarize the preprocessing steps needed, the  feature vectors may need to be padded and finally normalized to length 1 before given to the amplitude encoding routine.
+One such an example is amplitude encoding, where the input feature vector is encoded into the amplitudes of the quantum state. Weigold et al. \cite{Weigold2021_EncodingPatternsForQuantumAlgorithms} states that the squared moduli of the amplitudes of a quantum state must sum up to 1, and therefore the input feature vector needs to be normalized to length 1. To associate each amplitude with a component of the input feature vector, the dimension of the feature vector must be equal to a power of two because the vector space of a $n$ qubit register has dimension $2^n$. If this is not the case, the input feature vector can be padded with additional zeros to increase the dimension of it. To summarize the preprocessing steps needed, the  feature vectors may need to be padded and finally normalized to length 1 before given to the amplitude encoding routine.
 
-The data used in our experiments is scaled to different ranges using \code{sklearn} \code{MinMaxScaler}\cite{scikit_sklearnpreprocessingminmaxscaler_nodate} and \code{StandardScaler}\cite{scikit_sklearnpreprocessingstandardscaler_nodate}. The \code{StandardScaler} centers and scales the data to unit variance and the \code{MinMaxScaler} is used to additionally scale the data between a given range $[x, y]$, where $x < y$, for the angle embedding. Since the angles for the rotation gates $\mathrm{RY}$, $\mathrm{RX}$ and $\mathrm{RZ}$ are $2\pi$-periodic, it makes sense to scale the data accordingly to ranges $[-1,1]$, $[0,2\pi]$\cite{schuld2021supervised} or $[-\pi,\pi]$, \todo{explain reason here, may add bloch spheres to make the point with turn around and measuring Z resulting in the same probability}
+The data used in our experiments is scaled to different ranges using \code{sklearn} \code{MinMaxScaler}\cite{scikit_sklearnpreprocessingminmaxscaler_nodate} and \code{StandardScaler}\cite{scikit_sklearnpreprocessingstandardscaler_nodate}. The \code{StandardScaler} centres and scales the data to unit variance and the \code{MinMaxScaler} is used to additionally scale the data between a given range $[x, y]$, where $x < y$, for the angle embedding. Since the angles for the rotation gates $\mathrm{RY}$, $\mathrm{RX}$ and $\mathrm{RZ}$ are $2\pi$-periodic, it makes sense to scale the data accordingly to ranges $[-1,1]$, $[0,2\pi]$\cite{schuld2021supervised} or $[-\pi,\pi]$, \todo{explain reason here, may add bloch spheres to make the point with turn around and measuring Z resulting in the same probability}
 
