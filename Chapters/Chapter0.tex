@@ -108,7 +108,7 @@ Using the same method and the information from table \ref{table:binary_addition_
         0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
         0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
         0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
-        0 & 0 & 0 & 0 & 0 & 0 & 0 &1
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 1
         \end{pmatrix}
     \end{split}
     \label{equation:addition_output_matrix}
@@ -126,7 +126,7 @@ Note that the matrix $O$ in equation \ref{equation:addition_output_matrix} can b
         0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
         0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
         0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
-        0 & 0 & 0 & 0 & 0 & 0 & 0 &1
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 1
         \end{pmatrix}\begin{pmatrix}
          1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
          0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\ 
@@ -145,7 +145,7 @@ Note that the matrix $O$ in equation \ref{equation:addition_output_matrix} can b
         0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
         0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
         0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
-        0 & 0 & 0 & 0 & 0 & 0 & 0 &1
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 1
         \end{pmatrix}
     \end{split}
     \label{equation:addition_matrix_solved}
@@ -232,9 +232,10 @@ Combining these two solutions, we construct a quantum circuit to add any $n$ bit
         \ghost{c:} & \lstick{c:} & \lstick{/_{_{4}}} \cw & \cw & \cw & \cw & \dstick{_{_{0}}} \cw \cwx[-11] & \cw & \dstick{_{_{1}}} \cw \cwx[-10] & \cw & \dstick{_{_{2}}} \cw \cwx[-7] & \cw & \dstick{_{_{3}}} \cw \cwx[-4] & \cw & \cw\\ 
         }
     }
-    \caption{$4$ bit wide full adder\todo{add more explanation to image}}
+    \caption{$4$ bit wide full adder}
     \label{figure:four_bit_full_adder}
 \end{figure}
+\todo{add more explanation to image}
 
 In figure \ref{figure:four_bit_full_adder} the $i$ in $x_{Ai}$ and $x_{Bi}$ stands for the $i$th bit in the word, starting with the LSB\footnote{Least significant bit}. Both the \emph{carry over} and \emph{addition} gates are the previously discussed ones. The numbering on their input side resembles the mapping of the incoming qubit to the \emph{internal qubit}. The figure also illustrates how the $carry_i$ qubit is reused as output qubit of the next addition step.
 
@@ -393,9 +394,10 @@ With $U_{\times}$ and $U_{\add}$ calculated and the \emph{carry over} gate defin
         \ghost{ y_1 :  } & \lstick{ y_1 :  } & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ghost{\mathrm{carry\,over}}_<<<{3} & \meter & \qw & \qw & \qw\\ 
         \ghost{c:} & \lstick{c:} & \lstick{/_{_{4}}} \cw & \cw & \cw & \cw & \cw & \dstick{_{_{0}}} \cw \cwx[-6] & \cw & \cw & \cw & \cw & \dstick{_{_{1}}} \cw \cwx[-6] & \cw & \cw & \dstick{_{_{3}}} \cw \cwx[-1] & \dstick{_{_{2}}} \cw \cwx[-6] & \cw & \cw\\ 
         \\ }}
-    \caption{$2$ bit wide multiplier\todo{add more explanation to image}}
+    \caption{$2$ bit wide multiplier}
     \label{figure:two_bit_wide_multiplier}
 \end{figure}
+\todo{add more explanation to image}
 
 \newpage 
 
@@ -410,7 +412,7 @@ Figure \ref{figure:two_bit_wide_multiplier} shows a circuit that can multiply tw
     \end{split}
 \end{equation}
 
-$n_{bits} > 1$ adds a special rules that can be observed in figure \ref{figure:two_bit_wide_multiplier}. The intermediate results of every multiplication, except the first, must be preserved. Additional qubits are then needed to act as $carry$ for the binary addition. For this case, $n_{carry}$ equals $1$ as we can reuse the last measurement qubit. This was omitted in equation \ref{equation:1_bit_multiplier} as there was no need for binary addition. Note that $n_{measure}$ is always $2$ as we can reuse the first measurement, but need a second one for the last measurment.
+$n_{bits} > 1$ adds a special rules that can be observed in figure \ref{figure:two_bit_wide_multiplier}. The intermediate results of every multiplication, except the first, must be preserved. Additional qubits are then needed to act as $carry$ for the binary addition. For this case, $n_{carry}$ equals $1$ as we can reuse the last measurement qubit. This was omitted in equation \ref{equation:1_bit_multiplier} as there was no need for binary addition. Note that $n_{measure}$ is always $2$ as we can reuse the first measurement, but need a second one for the last measurement.
 
 \begin{equation}\label{equation:2_bit_multiplier}
 \centering
@@ -449,4 +451,4 @@ Any larger sizes could not be create, and therefor, evaluated. The required amou
 The solutions presented in this chapter show that replication of a computational neuron is possible. The amount of required qubits for the implementation of basic circuits seems a deterrent when further pursuing this solution. Current quantum solutions for classical problems like \emph{Multiple Query Optimization} as demonstrated by Fankhauser et al.\cite{fankhauser_multiple_2021} can be solved without the need to replicate classical methods with the usage of superpositions and entanglement, which are completely absent from the solutions presented in chapters \ref{chapter:binary_addition} and \ref{chapter:binary_multiplication}. 
 
 This does not mean that the proposed circuits serve no purpose. These could, in the future, be used to allow basic arithmetic on quantum-only devices. The reversed state of the $n$-bit multiplier shown in figure \ref{figure:two_bit_wide_multiplier} could be adapted, using superpositions and entanglement, to calculate two factors used to calculate the given value.
-\todo{Quantum vorteil?}
+\todo{Quantum vorteil => yes, no, why?}
