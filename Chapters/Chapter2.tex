@@ -7,9 +7,7 @@
 \section{Basic operations}
 \label{chapter:basic_opterations}
 
-Before creating a quantum circuit, a basic understanding of quantum operations and gates is needed. Comparable to the classical bit, qubits are the more powerful quantum equivalent. Whilst classical bits can only assume a state of $1$ and $0$, a qubit can be $1$,$0$ or anything in between. The state of a single, non-entangled qubit can be visualized with the Bloch sphere\cite{bloch_nuclear_induction}. Figure \ref{fig:circuit_empty} shows a simple circuit containing one qubit, annotated with $q_0$, and figure \ref{fig:circuit_empty_bloch_sphere} shows the Bloch sphere for it.
-
-\todo{Explain all gates, what does it and where is it used and why}
+Before creating a quantum circuit, a basic understanding of quantum operations and gates is needed. Comparable to the classical bit, qubits are the more powerful quantum equivalent. Whilst classical bits can only assume a state of $1$ and $0$, a qubit can be $1$, $0$ or anything in between. The state of a single, non-entangled qubit can be visualized with the Bloch sphere\cite{bloch_nuclear_induction}. Figure \ref{fig:circuit_empty} shows a simple circuit containing one qubit, annotated with $q_0$, and figure \ref{fig:circuit_empty_bloch_sphere} shows the Bloch sphere for it.
 
 \begin{figure}[!h]
     \centering
@@ -18,7 +16,7 @@ Before creating a quantum circuit, a basic understanding of quantum operations a
             \nghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \qw & \qw\\ 
         }
     }
-    \caption{Empty single qubit circuit}
+    \caption{Quantum circuit with a single qubit and no quantum gates}
     \label{fig:circuit_empty}
 \end{figure}
 
@@ -27,18 +25,18 @@ Before creating a quantum circuit, a basic understanding of quantum operations a
     \scalebox{0.3}{
         \includegraphics{Appendices/chapter_2/basic_bloch_sphere.png}
     }
-    \caption{State vector on bloch sphere}
+    \caption{Bloch sphere with the state $\ket{0}$}
     \label{fig:circuit_empty_bloch_sphere}
 \end{figure}
 
-The visible arrow shows the current state, which lies directly on the $z$ axis. This state is described as a vector in equation \ref{equation:single_qubit_zero_state}.
+The visible arrow shows the current state, which lies directly on the $z$ axis. The state of the qubit is described as a vector in equation \ref{equation:single_qubit_zero_state}.
 
 \begin{equation}
     \ket{0} = \begin{pmatrix}1 \\ 0\end{pmatrix}
     \label{equation:single_qubit_zero_state}
 \end{equation}
 
-The classical NOT gate, that inverts the state of a chosen bit, also exists as a quantum gate. The matrix definition of the Pauli $\mathrm{X}$ gate is represented in figure \ref{fig:matrix_pauli_x}. When applying it to a qubit, a multiplication of the state vector of $q_0$ and the matrix $\mathrm{X}$ results in the inverted state $\ket{1}$, as demonstrated in equation \ref{equation:pauli_x_example}. The circuit for this example is shown in figure \ref{fig:circuit_negated_empty}. Figure \ref{fig:circuit_negated_empty_bloch_sphere} shows that our state now points in the opposite direction when compare to figure \ref{fig:circuit_empty_bloch_sphere}.
+The classical NOT gate, that inverts the state of a chosen bit, also exists as a quantum gate. The matrix definition of the Pauli $\mathrm{X}$\cite{qiskit_xgate_nodate} gate is represented in figure \ref{fig:matrix_pauli_x}. When applying it to a qubit, a multiplication of the state vector of $q_0$ and the matrix $\mathrm{X}$ results in the inverted state $\ket{1}$, as demonstrated in equation \ref{equation:pauli_x_example}. The circuit for this example is shown in figure \ref{fig:circuit_negated_empty}. Figure \ref{fig:circuit_negated_empty_bloch_sphere} shows that our state now points in the opposite direction when compared to figure \ref{fig:circuit_empty_bloch_sphere}.
 
 \begin{figure}
     \centering
@@ -46,7 +44,7 @@ The classical NOT gate, that inverts the state of a chosen bit, also exists as a
         0 & 1 \\
         1 & 0
     \end{pmatrix}$
-    \caption{Pauli X gate matrix}
+    \caption{Matrix that defines the Pauli $\mathrm{X}$ gate}
     \label{fig:matrix_pauli_x}
 \end{figure}
 
@@ -57,7 +55,7 @@ The classical NOT gate, that inverts the state of a chosen bit, also exists as a
             \nghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \gate{\mathrm{X}} & \qw & \qw\\ 
         }
     }
-    \caption{Negated single qubit circuit}
+    \caption{Quantum circuit with a single qubit and $\mathrm{X}$ gate}
     \label{fig:circuit_negated_empty}
 \end{figure}
 
@@ -66,7 +64,7 @@ The classical NOT gate, that inverts the state of a chosen bit, also exists as a
     \scalebox{0.3}{
         \includegraphics{Appendices/chapter_2/negated_bloch_sphere.png}
     }
-    \caption{Negated state vector on bloch sphere}
+    \caption{Bloch sphere with the state $\ket{1}$}
     \label{fig:circuit_negated_empty_bloch_sphere}
 \end{figure}
 
@@ -78,12 +76,12 @@ The classical NOT gate, that inverts the state of a chosen bit, also exists as a
     \label{equation:pauli_x_example}
 \end{equation}
 
-Superpositions are any state that is neither $\ket{0}$ and $\ket{1}$, but a combination of both. Such a state is defined as $\alpha\ket{0} + \beta\ket{1}$, where the quadratic value of $\alpha$ and $\beta$ corresponds to the probability of the given state, and there for $\alpha^2 + \beta^2 = 1$. When building quantum circuits, the Hadamard\cite{qiskit_hgate_nodate} gate can be used to put a qubit in an \emph{equal}, that is equal probability for $\ket{0}$ and $\ket{1}$, superposition. Figure \ref{fig:matrix_hadamard} shows the matrix definition of the Hadamard gate, figure \ref{fig:circuit_hadamard} a simple single qubit circuit with the Hadamard gate, and equation \ref{equation:hadamard_example} the calculation of said circuit. The Bloch sphere in figure \ref{fig:circuit_hadamard_bloch_sphere} shows the attained superposition, which is orthogonal to the $Z$ axis.
+A superposition is any state that is neither $\ket{0}$ and $\ket{1}$, but a combination of both. Such a state is defined as $\alpha\ket{0} + \beta\ket{1}$, where the quadratic value of $\alpha$ and $\beta$\footnote{Gross simplification, see chapter \ref{chapter:measurement}} corresponds to the probability of the given state, and therefore $\alpha^2 + \beta^2 = 1$. When building a quantum circuit, the Hadamard, or $\mathrm{H}$\cite{qiskit_hgate_nodate}, gate can be used to put a qubit in an \emph{equal} superposition, that is equal probability for $\ket{0}$ and $\ket{1}$. Figure \ref{fig:matrix_hadamard} shows the matrix definition of the Hadamard gate, figure \ref{fig:circuit_hadamard} a simple single qubit circuit with the Hadamard gate, and equation \ref{equation:hadamard_example} the calculation of said circuit. The Bloch sphere in figure \ref{fig:circuit_hadamard_bloch_sphere} shows the attained superposition, which is orthogonal to the $Z$ axis.
 
 \begin{figure}[!h]
     \centering
     $\mathrm{H} = \frac{1}{\sqrt{2}}\begin{pmatrix}1 & 1 \\1 & -1\end{pmatrix}$
-    \caption{Hadamard gate matrix}
+    \caption{Matrix that defines the Hadamard gate}
     \label{fig:matrix_hadamard}
 \end{figure}
 
@@ -103,7 +101,7 @@ Superpositions are any state that is neither $\ket{0}$ and $\ket{1}$, but a comb
             \nghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \gate{\mathrm{H}} & \qw & \qw\\ 
         }
     }
-    \caption{Circuit with Hadamard gate}
+    \caption{Quantum circuit with a single qubit and Hadamard gate}
     \label{fig:circuit_hadamard}
 \end{figure}
 
@@ -112,14 +110,16 @@ Superpositions are any state that is neither $\ket{0}$ and $\ket{1}$, but a comb
     \scalebox{0.3}{
         \includegraphics{Appendices/chapter_2/hadamard_bloch_sphere.png}
     }
-    \caption{Superposition state on bloch sphere}
+    \caption{Bloch sphere with the equal superposition state $\frac{1}{\sqrt{2}}\ket{0} + \frac{1}{\sqrt{2}}\ket{1}$}
     \label{fig:circuit_hadamard_bloch_sphere}
 \end{figure}
+
+\clearpage
 
 \section{Rotations}
 \label{chapter:rotations}
 
-As seen in chapter \ref{chapter:basic_opterations}, quantum gates apply rotations to the state inside the Bloch sphere. There exist parametrizable, rotational gates that rotate the state around a given axis, by the supplied value. One of those gates is the $\mathrm{RY}(\theta)$ gate\cite{qiskit_rygate_nodate}. The $\mathrm{RY}$ gate is constructed from the Pauli $\mathrm{Y}$ gate as shown in equation \ref{equation:pauli_y_to_ry}. Note that the resulting power series is equal to the ones defined for $\cos$ and $\sin$ in equation \ref{equation:power_series_sin_cos}\cite{lars_complex_1978}. As measurements in a quantum circuit are, to put it simply, collapsing the state vector onto the $Z$ axis\cite{feynman_feynman_1965}, rotation around the $Y$ axis have a direct impact on the probabilities of a measurement.
+As seen in chapter \ref{chapter:basic_opterations}, quantum gates apply rotations to the state inside the Bloch sphere. There exist parametrizable, rotational gates that rotate the state around a given axis, by the supplied value. One of those gates is the $\mathrm{RY}(\theta)$\cite{qiskit_rygate_nodate} gate. The $\mathrm{RY}$ gate is constructed from the Pauli $\mathrm{Y}$ gate as shown in equation \ref{equation:pauli_y_to_ry}. Note that the resulting power series is equal to the ones defined for $\cos$ and $\sin$ in equation \ref{equation:power_series_sin_cos}\cite{lars_complex_1978}. As measurements in a quantum circuit are, to put it simply, collapsing the state vector onto the $Z$ axis\cite{feynman_feynman_1965}, rotation around the $Y$ axis have a direct impact on the probabilities of the measurement.
 
 \begin{equation}
     \begin{split}
@@ -155,7 +155,7 @@ As seen in chapter \ref{chapter:basic_opterations}, quantum gates apply rotation
             \nghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \gate{\mathrm{R_Y}\,(\frac{\pi}{2})} & \qw & \qw\\ 
         }
     }
-    \caption{Circuit with RY gate parameterized to $\frac{\pi}{2}$}
+    \caption{Quantum circuit with a single qubit and $\mathrm{RY}$ gate parameterized to $\frac{\pi}{2}$}
     \label{fig:circuit_ry}
 \end{figure}
 
@@ -164,7 +164,7 @@ As seen in chapter \ref{chapter:basic_opterations}, quantum gates apply rotation
     \scalebox{0.3}{
         \includegraphics{Appendices/chapter_2/halfpi_yrotation_bloch_sphere.png}
     }
-    \caption{Superposition state on Bloch sphere using RY gate}
+    \caption{Bloch sphere with the equal superposition state $\cos(\frac\pi{4})\ket{0} + \sin(\frac\pi{4})\ket{1}$}
     \label{fig:ry_bloch_sphere}
 \end{figure}
 
@@ -173,11 +173,11 @@ As seen in chapter \ref{chapter:basic_opterations}, quantum gates apply rotation
     \scalebox{0.5}{
         \includegraphics{Appendices/chapter_2/halfpi_yrotation_histogram.png}
     }
-    \caption{Histogram of measurements done on circuit \ref{fig:circuit_ry}}
+    \caption{Histogram of the resulting probabilities for $\ket{0}$ and $\ket{1}$ on circuit \ref{fig:circuit_ry}}
     \label{fig:histogram_ry}
 \end{figure}
 
-Quantum circuits with more than one qubit can use entanglement of both for advanced unitary operations. When entangling two qubits together, one has to start with calculating the tensor product of their state vectors. For circuit \ref{fig:circuit_double_hadamard}, the calculations are outlined in equation \ref{equation:two_hadamard_example}.
+Quantum circuits with more than one qubit can use the entanglement of multiple qubits for advanced unitary operations. When entangling two qubits together, one has to start with calculating the tensor product of their state vectors. For circuit \ref{fig:circuit_double_hadamard}, the calculations are outlined in equation \ref{equation:two_hadamard_example}.
 
 \begin{figure}[!h]
     \centering
@@ -187,7 +187,7 @@ Quantum circuits with more than one qubit can use entanglement of both for advan
             \nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{H}} & \qw & \qw\\ 
         }
     }
-    \caption{Circuit with two Hadamard gates}
+    \caption{Quantum circuit with two qubits and two Hadamard gates}
     \label{fig:circuit_double_hadamard}
 \end{figure}
 
@@ -215,7 +215,7 @@ Quantum gates can be of any size and use as many qubits as they're designed for.
             \nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{H}} & \gate{\mathrm{Y}} & \qw & \qw\\
         }
     }
-    \caption{Circuit entangled with a $\mathrm{CY}$ gate}
+    \caption{Quantum circuit with two qubits, two Hadamard gates and entangled with a $\mathrm{CY}$ gate}
     \label{fig:cy_entanglement}
 \end{figure}
 
@@ -250,7 +250,7 @@ Quantum gates can be of any size and use as many qubits as they're designed for.
             \nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \qw\\
         }
     }
-    \caption{Circuit entangled with a $\mathrm{CX}$ gate}
+    \caption{Quantum circuit with two qubits, two Hadamard gates and entangled with a $\mathrm{CX}$ gate}
     \label{fig:cx_entanglement}
 \end{figure}
 
@@ -284,7 +284,7 @@ Quantum gates can be of any size and use as many qubits as they're designed for.
             \nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{H}} & \control\qw & \qw & \qw\\
         }
     }
-    \caption{Circuit entangled with a $\mathrm{CZ}$ gate}
+    \caption{Quantum circuit with two qubits, two Hadamard gates and entangled with a $\mathrm{CZ}$ gate}
     \label{fig:cz_entanglement}
 \end{figure}
 
@@ -309,7 +309,8 @@ Quantum gates can be of any size and use as many qubits as they're designed for.
 \end{equation}
 
 \subsection{Measurement}
-When measuring a quantum circuit, it always returns one of all the possible values. This is why when determining the result of a quantum circuit, multiples \emph{shots} are executed and from all the measured states the probabilities calculated. This also applies when calculating the probabilities. The statement in chapter \ref{chapter:basic_opterations} $\alpha^2 + \beta^2 = 1$ is a gross simplification of the process. To measure the probability of measuring $01$ in a two qubit circuit, we have to use a measurement matrix and surround it with our state $\ket{\psi}$\footnote{$\ket{\psi}$ stands for any arbitrary qubit state} and $\bra{\psi}$, which is the Hermitian transposition of $\ket{\psi}$. Equation \ref{equation:probability_calculation_example_1} demonstrates the steps needed to measure the probability of the state $01$ and equation \ref{equation:probability_calculation_example_2} for state $11$. Further calculations will use $M$ to resemble all four, single calculations and show them as a single vector.
+\label{chapter:measurement}
+The statement in chapter \ref{chapter:basic_opterations} of $\alpha^2 + \beta^2 = 1$ is a gross simplification of the  measurement process. When measuring a quantum circuit, it always returns one of all the possible values. This is why, when determining it, multiples \emph{shots} are executed until the achieved distribution of values converges onto their probabilities. This also applies when calculating the probabilities. Whilst it is not necessary to do multiple calculations for each state, each state does need to be calculated separately. To measure the probability of $01$ in a two qubit circuit, we have to use a measurement matrix and surround it with our state $\ket{\psi}$\footnote{$\ket{\psi}$ stands for any arbitrary qubit state} and $\bra{\psi}$, which is the Hermitian transposition\cite{marshall_c_methods_1964} of $\ket{\psi}$. Equation \ref{equation:probability_calculation_example_1} demonstrates the steps needed to measure the probability of state $01$ and equation \ref{equation:probability_calculation_example_2} for state $11$. Further calculations in this chapter will use $M$ to resemble all four, single calculations and show them as a single vector.
 
 \begin{equation}
     \centering
@@ -343,7 +344,7 @@ When measuring a quantum circuit, it always returns one of all the possible valu
     \label{equation:probability_calculation_example_2}
 \end{equation}
 
-As entanglement connects both qubits, any gate that is applied to one of those is directly applied to the other one. The circuit \ref{fig:circuit_cz_entangled_ry_gate} show a $\mathrm{RY}$ gate after the entanglement. To calculate this quantum circuit, an increase in dimensionality of the target gate is done. Equation \ref{equation:2_x_2_ry} demonstrates how the identity matrix is used on the $\mathrm{RY}$ gate.
+As entanglement connects both qubits, any gate that is applied to one of those is directly applied to the other one. The circuit \ref{fig:circuit_cz_entangled_ry_gate} shows the $\mathrm{RY}$ gate, parameterized to $\frac{\pi}{4}$,  after the entanglement. To calculate this quantum circuit, an increase in dimensionality of the target gate is done. Equation \ref{equation:2_x_2_ry} demonstrates how the identity matrix is used on the $\mathrm{RY}$ gate.
 
  \begin{equation}
      \centering
@@ -358,7 +359,7 @@ As entanglement connects both qubits, any gate that is applied to one of those i
      \label{equation:2_x_2_ry}
  \end{equation}
 
-Equations \ref{equation:cz_entanglement_with_ry}, \ref{equation:cx_entanglement_with_ry} and \ref{equation:cz_entanglement_with_ry} show the calculations for each type of entanglement. The final measurement calculations for the respective variants are shown in equations \ref{equation:cz_entanglement_with_ry}, \ref{equation:cx_entanglement_with_ry} and \ref{equation:cy_entanglement_with_ry}.
+Equations \ref{equation:cz_entanglement_with_ry}, \ref{equation:cx_entanglement_with_ry} and \ref{equation:cy_entanglement_with_ry} show the calculations of the resulting probabilities for each type of entanglement.
 
 \begin{figure}[!ht]
     \centering
@@ -368,7 +369,7 @@ Equations \ref{equation:cz_entanglement_with_ry}, \ref{equation:cx_entanglement_
             \nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{H}} & \control\qw & \qw & \qw & \qw\
             }
         }
-    \caption{Circuit with $\mathrm{CZ}$ entanglement and $\mathrm{RY}$ gate}
+    \caption{Quantum circuit with two qubits, two Hadamard gates, entangled with a $\mathrm{CZ}$ gate and a follow-up $\mathrm{RY}$ gate}
     \label{fig:circuit_cz_entangled_ry_gate}
 \end{figure}
 
@@ -425,7 +426,7 @@ Equations \ref{equation:cz_entanglement_with_ry}, \ref{equation:cx_entanglement_
     \label{equation:cy_entanglement_with_ry}
 \end{equation}
 
-To assess the differences between the application of the rotation gate $\mathrm{RY}$ before the entanglement, circuit \ref{fig:circuit_ry_gate_cz_entangled} is calculated. The initial step to apply $\mathrm{RY}(\theta)$ to $q_0$, as seen in equation \ref{equation:hadamard_ry_before_entanglement}.
+To assess the differences between the application of the rotation gate $\mathrm{RY}$ before the entanglement, circuit \ref{fig:circuit_ry_gate_cz_entangled} is calculated. The initial step of applying $\mathrm{RY}(\theta)$ to $q_0$, is demonstrated in equation \ref{equation:hadamard_ry_before_entanglement}.
 
 \begin{figure}[!ht]
     \centering
@@ -436,7 +437,7 @@ To assess the differences between the application of the rotation gate $\mathrm{
 	 	    \nghost{ {text} :  } & \lstick{  } & & &\ket{\psi_0} & & &\\ 
         }
     }
-    \caption{Circuit with a $\mathrm{RY}$ gate and $\mathrm{CZ}$ entangled}
+    \caption{Quantum circuit with two qubits, two Hadamard gates, single $\mathrm{RY}$ gate and entangled with a $\mathrm{CZ}$ gate}
     \label{fig:circuit_ry_gate_cz_entangled}
 \end{figure}
 
@@ -512,7 +513,7 @@ To assess the differences between the application of the rotation gate $\mathrm{
     \label{equation:h_ry_cy_entanglement}
 \end{equation}
 
-Whereas equation \ref{equation:cy_entanglement_with_ry} shows that when applying $\mathrm{RY}$ after the entanglement, it returns the states to their previous probabilities,  equation \ref{equation:h_ry_cy_entanglement} losses none of its operations. This indicates that applying the weights before the entanglement can result in a wider range of results.
+Whereas equation \ref{equation:cy_entanglement_with_ry} shows that when applying $\mathrm{RY}$ after the entanglement, it returns the states to their previous probabilities, equation \ref{equation:h_ry_cy_entanglement} losses none of its operations. This indicates that applying the weights before the entanglement can result in a wider range of results, which \emph{could} lead to a more powerful classifier.
 
 %----------------------------------------------------------------------------------------
 \clearpage
@@ -541,7 +542,7 @@ To design the quantum equivalent to a neural net, a visual comparison is created
     	(4) edge (7)
     	(5) edge (7);
     \end{tikzpicture}
-    \caption{Features with their corresponding weights}
+    \caption{Example neural network, with the weighted input connections being highlighted}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
 \centering
@@ -553,9 +554,9 @@ To design the quantum equivalent to a neural net, a visual comparison is created
             \nghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\, (\mathrm{i_3})} & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \qw & \qw\\
         }
     }
-    \caption{Circuit with RY gates for input features and their weights}
+    \caption{Quantum circuit with four qubits and a pair of two $\mathrm{RY}$ gates per qubit, one for the input feature $i_x$ and one for the weight $w_x$}
 \end{subfigure}%
-\caption{Comparison of the feature$\cdot$weight component of a computation neuron and the quantum equivalent}
+\caption{Comparison of neural network and input and weight gates of the quantum circuit}
 \label{fig:comparison_neuron_feature_weight_quantum}
 \end{figure}
 
@@ -605,7 +606,7 @@ The next step is to rebuild the two partially connected nodes $\sum_0$ and $\sum
     	(4) edge (7)
     	(5) edge (7);
     \end{tikzpicture}
-    \caption{Features with their corresponding weights}
+    \caption{Example neural network, with the first two nodes highlighted}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
 \centering
@@ -618,9 +619,9 @@ The next step is to rebuild the two partially connected nodes $\sum_0$ and $\sum
         \nghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \control\qw & \qw & \qw\\
         }
     }
-    \caption{Circuit with RY gates for input features and their weights}
+    \caption{Quantum circuit with four qubits, weighted input gates and entanglement between $q_0,q_1$ and $q_2,q_3$}
 \end{subfigure}%
-\caption{Comparison of summation nodes and their quantum entanglement equivalent.}
+\caption{Comparison of the summation nodes of the neural network and their quantum entanglement equivalent.}
 \label{fig:comparison_neuron_feature_weight_entanglement_quantum}
 \end{figure}
 
@@ -697,7 +698,7 @@ At the end of the neural network, we have two more nodes, one of which is fully 
     	(4) edge [preaction={draw,yellow,-,double=yellow,double distance=2\pgflinewidth,}] (7)
     	(5) edge (7);
     \end{tikzpicture}
-    \caption{Features with their corresponding weights}
+    \caption{Example neural network, with the connection between node $\sum_0$ and $sum_3$ highlighted}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
 \centering
@@ -710,9 +711,9 @@ At the end of the neural network, we have two more nodes, one of which is fully 
         \nghost{ } & \lstick{ } & & & & \ket{\psi_2} & & \ket{\psi_3} & \\
         }
     }
-    \caption{Circuit with RY gates for input features and their weights}
+    \caption{Quantum circuit with four qubits, weighted input gates and entanglement between $q_0,q_1$ and $q_2,q_3$, and entanglement between $q_{01}$ and $q_{23}$}
 \end{subfigure}%
-\caption{Comparison of final entanglement and output.}
+\caption{Overview of the final quantum circuit in comparison to the neural network}
 \label{fig:comparison_measurment_layer}
 \end{figure}
 
@@ -765,7 +766,6 @@ The shown neural network is designed to illustrate the core problem that entangl
     	(5) edge (6)
     	(5) edge (7);
     \end{tikzpicture}
-    \caption{Features with their corresponding weights}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
 \centering
@@ -788,8 +788,7 @@ The shown neural network is designed to illustrate the core problem that entangl
     	(5) edge (6)
     	(5) edge (7);
     \end{tikzpicture}
-    \caption{Features with their corresponding weights}
 \end{subfigure}%
-\caption{Comparison of final entanglement and output.}
+\caption{Example neural networks that all lead to the same quantum circuit illustrated in figure \ref{fig:comparison_neuron_feature_weight_entanglement_quantum}}
 \label{fig:full_entanglement_networks}
 \end{figure}

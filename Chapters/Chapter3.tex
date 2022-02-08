@@ -8,7 +8,7 @@
 \section{Quantum circuits}
 \label{chapter:quantum_circuits}
 
-Using the definitions from chapter \ref{chapter:computational_neuron} and \ref{chapter:quantum_embedding}, several quantum circuits are constructed for classification. \code{qiskit} offers a flexible approach for the gradient-based optimization of weights in a given circuit. \code{qiskit} is chosen for this task as it allows fine control of all components that go not only into the circuit, but also into the optimization. Based on the paper by Schuld et al. \cite{schuld_evaluating_2019}, we can optimize any given quantum circuit with a \code{NeuralNetworkClassifier}\cite{qiskit_neural_nodate}. The code to turn a single circuit into a classifier is shown in figure \ref{fig:code_qnn}. Note that the optimization itself is done in a classical fashion - only the classification is done with a quantum circuit. All calculations and classifications were done with the '\code{aer\_simulator}' from \code{qiskit}. The \code{NeuralNetworkClassifier} in combination with \code{CircuitQNN} uses a measurement of all given qubits and a parity function \ref{fig:parity_function} to determine the label, where $n$ is the amount of different labels in the dataset.
+Using the definitions from chapter \ref{chapter:quantum_embedding} and \ref{chapter:computational_neuron}, several quantum circuits are constructed for classification. \code{qiskit} offers a flexible approach for the gradient-based optimization of weights in a given circuit, as well as fine control of all components in the circuit and around the optimization. Based on the paper by Schuld et al. \cite{schuld_evaluating_2019}, we can optimize any given quantum circuit with a \code{NeuralNetworkClassifier}\cite{qiskit_neural_nodate}. The code to turn a single circuit into a classifier is shown in figure \ref{fig:code_qnn}. Note that the optimization itself is done in a classical fashion - only the classification is done with a quantum circuit. All calculations and classifications were done with the '\code{aer\_simulator}' from \code{qiskit}. The \code{NeuralNetworkClassifier} with \code{CircuitQNN} uses a measurement of all given qubits and the parity function \ref{fig:parity_function} to determine the label, where $n$ is the amount of different labels in the dataset.
 
 \begin{figure}[!ht]
     \centering
@@ -23,7 +23,7 @@ Using the definitions from chapter \ref{chapter:computational_neuron} and \ref{c
     nn_classifier = NeuralNetworkClassifier(neural_network=circuit_qnn, 
                                             optimizer=COBYLA())
     \end{minted}
-    \caption{Python code to create a neural network classifier from a quantum circuit}
+    \caption{Python code to create a trainable neural network classifier from a quantum circuit}
     \label{fig:code_qnn}
 \end{figure}
 
@@ -39,7 +39,7 @@ Using the definitions from chapter \ref{chapter:computational_neuron} and \ref{c
 
 \clearpage
 
-Figure \ref{fig:schematic_view_classical_and_quantum_circuit} is an overview of the training process. The features of a given dataset are preprocessed and then parameterized onto the circuit. The weights are set from the optimizer, which also adapts them during training.
+Figure \ref{fig:schematic_view_classical_and_quantum_circuit} is an overview of the training process. The features of a given dataset are preprocessed and then parameterized onto the state preparation part of the circuit. The weights are set from the optimizer, which also adapts them during training.
 
 \begin{figure}[!h]
     \centering
@@ -74,6 +74,7 @@ Figure \ref{fig:schematic_view_classical_and_quantum_circuit} is an overview of 
     \label{fig:schematic_view_classical_and_quantum_circuit}
 \end{figure}
 
+Figures \ref{fig:qc_ryrycryry} until \ref{fig:qc_ryryczry_2qbit} show the designs of the circuits used for the evaluation.
 
 
 \begin{figure}[!ht]
@@ -86,7 +87,7 @@ Figure \ref{fig:schematic_view_classical_and_quantum_circuit} is an overview of 
             \ghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_12})} & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \ctrl{-3} & \qw & \qw\\
           }
         }
-    \caption{Circuit 1 with $\mathrm{RY}$ gates before each entanglement with parameterized $\mathrm{CRY}$ gates}
+    \caption{Circuit 1 with $4$ qubits, $\mathrm{RY}$ gates before each entanglement, and entanglement with parameterized $\mathrm{CRY}$ gates}
     \label{fig:qc_ryrycryry}
 \end{figure}
 
@@ -100,7 +101,7 @@ Figure \ref{fig:schematic_view_classical_and_quantum_circuit} is an overview of 
     	 	\nghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_12})} & \ctrl{-3} & \qw & \qw\\ 
     \\ }
     }
-    \caption{Circuit 2 with $\mathrm{RY}$ for input and weights before entanglement with parameterized $\mathrm{CRY}$ gates}
+    \caption{Circuit 2 with $4$ qubits, $\mathrm{RY}$ for input and weights before entanglement, and entanglement with parameterized $\mathrm{CRY}$ gates}
     \label{fig:qc_ryrycrycry}
 \end{figure}
 
@@ -114,7 +115,7 @@ Figure \ref{fig:schematic_view_classical_and_quantum_circuit} is an overview of 
     	 	\nghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \qw & \qw & \qw & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \ctrl{-3} & \qw & \qw\\ 
     \\ }
     }
-    \caption{Circuit 3 with \mathrm{RY} gates before each entanglement with \mathrm{CZ} gates}
+    \caption{Circuit 3 with $4$ qubits, $\mathrm{RY}$ gates before each entanglement, and entanglement with parameterized $\mathrm{CZ}$ gates}
     \label{fig:qc_ryryczry}
 \end{figure}
 
@@ -127,7 +128,7 @@ Figure \ref{fig:schematic_view_classical_and_quantum_circuit} is an overview of 
 	 	\nghost{ {q}_{2} :  } & \lstick{ {q}_{2} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_2})} & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_11})} & \gate{\mathrm{R_Y}\,(\mathrm{w_2})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_15})} & \gate{\mathrm{R_Y}\,(\mathrm{w_6})} & \ctrl{1} & \qw & \qw & \qw & \qw\\ 
 	 	\nghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_12})} & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \ctrl{-3} & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_16})} & \gate{\mathrm{R_Y}\,(\mathrm{w_7})} & \ctrl{-3} & \qw & \qw\\ 
 \\ }}
-    \caption{Circuit 4 from figure \ref{fig:qc_ryrycryry} with repeated weight layer}
+    \caption{Circuit 4, which equals figure \ref{fig:qc_ryrycryry}, with repeated entanglement process.}
     \label{fig:qc_ryrycryry_double}
 \end{figure}
 
@@ -140,7 +141,7 @@ Figure \ref{fig:schematic_view_classical_and_quantum_circuit} is an overview of 
 	 	\nghost{ {q}_{2} :  } & \lstick{ {q}_{2} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_2})} & \qw & \qw & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_2})} & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_6})} & \ctrl{1} & \qw & \qw & \qw & \qw\\ 
 	 	\nghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \qw & \qw & \qw & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \ctrl{-3} & \qw & \qw & \qw & \qw & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_7})} & \ctrl{-3} & \qw & \qw\\ 
 \\ }}
-    \caption{Circuit 5 from figure \ref{fig:qc_ryrycrycry} with repeated weight layer}
+    \caption{Circuit 5, which equals figure \ref{fig:qc_ryrycrycry}, with repeated entanglement process.}
     \label{fig:qc_ryryczry_double}
 \end{figure}
 
@@ -153,7 +154,7 @@ Figure \ref{fig:schematic_view_classical_and_quantum_circuit} is an overview of 
 	 	\nghost{ {q}_{2} :  } & \lstick{ {q}_{2} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_2})} & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_11})} & \ctrl{1} & \gate{\mathrm{R_Y}\,(\mathrm{w_2})} & \qw & \qw & \qw & \qw\\ 
 	 	\nghost{ {q}_{3} :  } & \lstick{ {q}_{3} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_12})} & \qw & \ctrl{-3} & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \qw & \qw\\ 
 \\ }}
-    \caption{Circuit 6 with parameterized $\mathrm{RY}$ gates after entanglement with parameterized $\mathrm{CRY}$ gates}
+    \caption{Circuit 6 with $4$ qubits, $\mathrm{RY}$ gates after each entanglement, and entanglement with parameterized $\mathrm{CRY}$ gates}
     \label{fig:qc_rycryry}
 \end{figure}
 
@@ -164,7 +165,7 @@ Figure \ref{fig:schematic_view_classical_and_quantum_circuit} is an overview of 
 	 	\nghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_0})} & \gate{\mathrm{R_Y}\,(\mathrm{i_2})} & \gate{\mathrm{R_Y}\,(\mathrm{w_0})} & \ctrl{1} & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_12})} & \gate{\mathrm{R_Y}\,(\mathrm{w_1})} & \ctrl{1} & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_13})} & \qw & \qw\\ 
 	 	\nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_1})} & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_10})} & \gate{\mathrm{R_Y}\,(\mathrm{w_2})} & \ctrl{-1} & \qw & \gate{\mathrm{R_Y}\,(\mathrm{w_11})} & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \ctrl{-1} & \qw & \qw\\ 
 \\ }}
-    \caption{Circuit 7, resembles minimized circuit \ref{fig:qc_ryrycryry}, which can still classify 4 different classes}
+    \caption{Circuit 7 with $2$ qubits, which represents a minified version of circuit \ref{fig:qc_ryrycryry}}
     \label{fig:qc_ryryrycry_2qbit}
 \end{figure}
 
@@ -175,7 +176,7 @@ Figure \ref{fig:schematic_view_classical_and_quantum_circuit} is an overview of 
 	 	\nghost{ {q}_{0} :  } & \lstick{ {q}_{0} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_0})} & \gate{\mathrm{R_Y}\,(\mathrm{i_2})} & \gate{\mathrm{R_Y}\,(\mathrm{w_0})} & \ctrl{1} & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_1})} & \ctrl{1} & \qw & \control\qw & \qw & \qw\\ 
 	 	\nghost{ {q}_{1} :  } & \lstick{ {q}_{1} :  } & \gate{\mathrm{R_Y}\,(\mathrm{i_1})} & \gate{\mathrm{R_Y}\,(\mathrm{i_3})} & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_2})} & \ctrl{-1} & \qw & \control\qw & \gate{\mathrm{R_Y}\,(\mathrm{w_3})} & \ctrl{-1} & \qw & \qw\\ 
 \\ }}
-    \caption{Circuit 8, resembles minimized circuit \ref{fig:qc_ryryczry}, which can still classify 4 different classes}
+    \caption{Circuit 8 with $2$ qubits, which represents a minified version of circuit \ref{fig:qc_ryryczry}}
     \label{fig:qc_ryryczry_2qbit}
 \end{figure}
 
@@ -184,9 +185,8 @@ Figure \ref{fig:schematic_view_classical_and_quantum_circuit} is an overview of 
 \section{Datasets}
 \label{chapter:datasets}
 
-The circuits shown in chapter \ref{chapter:quantum_circuits} are used as shown or adapted for the given number of features and classes of the testing dataset. The datasets were used with three different forms of normalization. The first one is without any preprocessing, that is, the features are parameterized as is, the second one normalizes all features to the range $[-1,1]$ and the last one to  $[-\pi,\pi]$. As seen in chapters \ref{chapter:quantum_embedding} and \ref{chapter:rotation}, $\pi$ corresponds to a $180°$ rotation, so should offer some additional expressibility and the normalization to $[-1,1]$ as well, albeit by a smaller degree. The data collected on each circuit was done trough 10 training iteration, where each was started with a empty set of weights. Each measurement in the simulator of \code{qiskit} was done with $1024$ shots, and the data split was $25\%$ testing and $75\%$ training. Total training was done twice - once with random shuffle of the data between each training iteration, and once without. The seeds were all set for any randomized function, \emph{except} the measurement simulator from \code{qiskit}. This because any measurement in real life cannot be predicted through a random seed. This is supposed to allow better evaluation and understanding of training a quantum classifier.
+The circuits shown in chapter \ref{chapter:quantum_circuits} are used as shown or adapted for the given number of features and classes of the testing dataset. The datasets are used with three different forms of normalization. The first one uses no preprocessing, that is, the features are parameterized as is. The second one normalizes all features to the range $[-1,1]$, and the last one to  $[-\pi,\pi]$. As seen in chapters \ref{chapter:quantum_embedding} and \ref{chapter:rotations}, $\pi$ corresponds to a $180°$ rotation, so should offer some additional expressibility as well as the normalization to $[-1,1]$, albeit by a smaller factor. The data collected on each circuit was done trough 10 training iteration, where each was started with an empty set of weights. Each measurement in the simulator of \code{qiskit} was done with $1024$ shots, and the data split was $25\%$ testing and $75\%$ training. Total training was done twice - once with random shuffle of the data between each training iteration, and once without. The seeds were all set for any randomized function, \emph{except} the measurement simulator from \code{qiskit}. This because any measurement in real life cannot be predicted through a random seed. This is supposed to allow better evaluation and understanding of the training behaviour of a quantum classifier.
 
-\todo{Explicitly add count of data points and how many features etc.}
 
 \subsection{Iris}
 \label{chapter:iris}
@@ -196,12 +196,12 @@ The IRIS \cite{fisher_use_1936} dataset is one of the most well-known datasets w
 \subsection{Heart Failure Prediction}
 \label{chapter:heart_failure_prediction}
 
-This dataset \cite{ahmad_survival_2017} was selected due to several reasons. It is biased towards the \emph{survivor} classification with roughly 68\% of the entries being of class 0, and 32\% for class 1 as well as having a total of 299 entries. There exist several high accuracy offerings when it comes to classifying the complete dataset that can be used for comparison. The one used for comparison\cite{sakhiya_heart_nodate} achieves an accuracy of $93.33\%$. To allow for a direct comparison, the same $3$ features out of $12$ are used\footnote{In this dataset, \code{time} refers to the time during study of the patients and data collection, so a direct correlation between death and time exists, as a given time can typically be attributed to death or no death. For comparison’s sake, this error in feature selection was neglected, as we are only interested in achievable accuracy}.
+This dataset \cite{ahmad_survival_2017} was selected due to several reasons. It is biased towards the \emph{survivor} classification with roughly 68\% of the entries being of class 0, and 32\% for class 1, as well as having a total of 299 entries. There exist several high accuracy offerings when it comes to classifying the complete dataset that can be used for comparison. The one picked for comparison\cite{sakhiya_heart_nodate} achieves a maximal accuracy of $93.33\%$. To make a direct comparison possible, the same $3$ features out of $12$ are used\footnote{In this dataset, \code{time} refers to the time during study of the patients and data collection, so a direct correlation between death and time exists, as a given time can typically be attributed to death or no death. For comparison’s sake, this error in feature selection was neglected, as we are only interested in achievable accuracy}.
 
 \subsection{Artificial Problem}
 \label{chapter:artificial_problem}
 
-To examine the expressibility of the given circuits, the artificial problem from Havlicek et al. \cite{havlicek_supervised_2019} offers a problem space that is inherently hard to solve through classical methods. Havlicek et al. also purpose a circuit that can solve the given problem with perfect accuracy, which offers itself as a good comparison to the capabilities the created circuits offer. It consists of $2$ classes with $2$ features, amounting to a total of 250 entries. The problem space is dynamically generated and can be adapted to ones desired setup, as shown in figure \ref{fig:ad_hoc_code}. A visual representation of the problem space is shown in figure \ref{fig:problem_space_plot}.
+To examine the expressibility of the given circuits, the artificial problem from Havlicek et al. \cite{havlicek_supervised_2019} offers a problem space that is inherently hard to solve through classical methods. Havlicek et al. also purpose a circuit that can solve the given problem with perfect accuracy, which offers itself as a good comparison to the capabilities the created circuits offer. It consists of $2$ classes with $2$ features, amounting to a total of 250 entries. The problem space is dynamically generated and can be adapted to one's desired setup, as shown in figure \ref{fig:ad_hoc_code}. A visual representation of the problem space is shown in figure \ref{fig:problem_space_plot}.
 
 \begin{figure}[!ht]
     \centering
@@ -229,7 +229,7 @@ To examine the expressibility of the given circuits, the artificial problem from
 
 \clearpage
 \subsection{Classification On Quantum Hardware}
-Circuit \ref{fig:qc_ryrycryry} is used in the trained state and evaluated $5$ times on a real quantum computer. Due to access to real hardware being behind a queue system, the workload was split across multiple real devices. These are \code{ibmq\_belem} and \code{ibmq\_lima}. \code{qiskit} is used for this as it offers easy access to the hardware as well as selection of the least used system. Note that the trained weights defined in equation \ref{equation:weights_trained_circuit} are static in the circuit and therefore don't need to be parameterized.
+Circuit \ref{fig:qc_ryrycryry} is used in the trained state and evaluated $5$ times on a real quantum computer. Due to access to real hardware being behind a queue system, the workload was split across multiple real devices, which are \code{ibmq\_belem} and \code{ibmq\_lima}. \code{qiskit} is used for this as it offers easy access to the hardware as well as selection of the least used system. Note that the trained weights defined in equation \ref{equation:weights_trained_circuit} are static in the circuit and therefore don't need to be parameterized.
 
 \begin{equation}
     \centering
